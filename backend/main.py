@@ -169,11 +169,17 @@ async def scan_medication(request: ScanRequest):
         # Fallback stub
         scanned_drug = "Amoxicillin 500mg"
         drug_group = "Penicillin Group"
+        drug_description = "An antibiotic used to treat bacterial infections such as ear infections, pneumonia, and urinary tract infections."
         conflict = "Penicillin" in allergies
     else:
         try:
-            system_prompt = "You are a medical scanner identifying medication from images. Determine the specific drug name and drug class/group accurately from the pill bottle image. Return JSON strictly with keys 'drug_name' and 'drug_group'."
-            
+            system_prompt = (
+                "You are a medical scanner identifying medication from images. "
+                "Determine the specific drug name, drug class/group, and a brief 1-sentence plain-language "
+                "description of what the medication is used to treat. "
+                "Return JSON strictly with keys 'drug_name', 'drug_group', and 'drug_description'."
+            )
+
             response = await client.chat.completions.create(
                 model="openai/gpt-4o-mini",
                 messages=[
@@ -188,32 +194,35 @@ async def scan_medication(request: ScanRequest):
                 ],
                 response_format={"type": "json_object"}
             )
-            
+
             content = response.choices[0].message.content
             if content.startswith("```json"):
                 content = content.replace("```json", "").replace("```", "").strip()
-                
+
             result = json.loads(content)
             scanned_drug = result.get("drug_name", "Unknown Medication")
             drug_group = result.get("drug_group", "Unknown Group")
-            
+            drug_description = result.get("drug_description", "")
+
             # Dynamic heuristic allergy check
             conflict = False
             for allergy in allergies:
                 if allergy.lower() in drug_group.lower() or allergy.lower() in scanned_drug.lower():
                     conflict = True
                     break
-                    
+
         except Exception as e:
             print(f"Vision API Error: {e}")
             scanned_drug = "API Error (Fallback)"
             drug_group = "Unknown"
+            drug_description = ""
             conflict = False
 
     return JSONResponse(content={
         "scan_result": {
             "drug_name": scanned_drug,
             "drug_group": drug_group,
+            "drug_description": drug_description,
             "verified": True,
         },
         "alert": {
