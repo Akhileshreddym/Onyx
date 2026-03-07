@@ -62,6 +62,12 @@
       border: 1px solid var(--gold-wire);
       border-radius: 18px;
       box-shadow: var(--panel-shadow);
+      transition: border-color 0.35s ease, box-shadow 0.35s ease;
+    }
+
+    .glass-panel:hover {
+      border-color: rgba(212, 175, 55, 0.22);
+      box-shadow: var(--panel-shadow), 0 0 28px rgba(212, 175, 55, 0.05);
     }
 
     /* ─── BADGE ─── */
@@ -154,6 +160,9 @@
     .sb-icon.active {
       filter: brightness(1.3);
       background: rgba(212, 175, 55, 0.1);
+      border-left: 2px solid var(--gold-classic);
+      border-radius: 0 10px 10px 0;
+      padding-left: 2px;
     }
 
     /* ─── SCAN BUTTON ─── */
@@ -175,7 +184,14 @@
       background: rgba(60, 10, 10, 0.35);
       border: 1px solid rgba(200, 60, 60, 0.4);
       box-shadow: 0 4px 20px rgba(180, 40, 40, 0.1);
+      transition: opacity 0.4s ease, transform 0.4s ease;
     }
+
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(212,175,55,0.2); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(212,175,55,0.4); }
   </style>
 </head>
 
@@ -286,16 +302,19 @@
         <!-- Foreground -->
         <div class="flex-1 flex flex-col justify-end z-10 relative pointer-events-none">
           <div class="px-8 pb-6 pointer-events-auto">
-            <!-- Serif Hindi text -->
-            <p
-              class="text-[19px] text-white font-serif font-medium tracking-wide leading-relaxed drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">
-              नमस्ते, कृपया मेरा रक्तचाप का नुस्खा फिर से मंगवाएं।
-            </p>
-            <!-- Serif English text -->
-            <p class="text-[15px] font-serif tracking-wide mt-2 leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]"
-              style="color:var(--text-muted)">
-              Requesting Arthur P.'s blood pressure prescription renewal.<br>Processing intent...
-            </p>
+            <!-- Transcript scroll container -->
+            <div style="max-height:120px;overflow-y:auto;padding-right:4px;">
+              <!-- Serif Hindi text -->
+              <p
+                class="text-[19px] text-white font-serif font-medium tracking-wide leading-relaxed drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">
+                नमस्ते, कृपया मेरा रक्तचाप का नुस्खा फिर से मंगवाएं।
+              </p>
+              <!-- Serif English text -->
+              <p class="text-[15px] font-serif tracking-wide mt-2 leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]"
+                style="color:var(--text-muted)">
+                Requesting Arthur P.'s blood pressure prescription renewal.<br>Processing intent...
+              </p>
+            </div>
 
             <div class="flex items-center gap-3 mt-5">
               <span class="badge-green px-3.5 py-1.5 rounded-full text-[10px] font-semibold tracking-wider">Bilingual
@@ -306,7 +325,7 @@
 
             <!-- SPEAK TO ONYX — large mic -->
             <div id="el-mic" class="flex items-center justify-center gap-4 mt-7" style="opacity:0">
-              <span class="text-[11px] font-bold tracking-[0.25em] uppercase" style="color:var(--text-muted)">Speak to
+              <span id="mic-label" class="text-[11px] font-bold tracking-[0.25em] uppercase" style="color:var(--text-muted)">Speak to
                 Onyx</span>
               <div class="relative w-[72px] h-[72px]" id="micWrap">
                 <div class="mic-halo-ring" id="haloA"></div>
@@ -351,17 +370,21 @@
           <div class="laser-line z-40 hidden"></div>
         </div>
 
-        <p class="text-[12px] text-white font-medium mb-3">
-          Scan Verified: <span class="font-normal" style="color:var(--text-muted)">Amoxicillin 500mg. (Penicillin
-            Group)</span>
-        </p>
-
-        <div class="alert-critical rounded-lg p-3.5 mb-4">
-          <p class="text-[10px] font-bold uppercase tracking-widest mb-1" style="color:var(--red-text)">Alert Status</p>
-          <p class="text-[12px] leading-snug text-red-300/90">
-            Critical Allergy Conflict Detected. <em class="font-semibold" style="color:#F59E0B">Immediate Action
-              Protocol Initiated.</em>
+        <div id="scan-results-wrap" style="min-height:130px;display:flex;flex-direction:column;gap:10px;">
+          <p class="text-[12px] text-white font-medium" style="opacity:0;pointer-events:none;transition:opacity 0.4s ease;">
+            Scan Verified: <span class="font-normal" style="color:var(--text-muted)">Amoxicillin 500mg. (Penicillin
+              Group)</span>
           </p>
+
+          <p id="drug-description-text" class="text-[11.5px] leading-snug" style="color:var(--text-muted);opacity:0;pointer-events:none;transition:opacity 0.4s ease 0.1s;"></p>
+
+          <div class="alert-critical rounded-lg p-3.5" style="opacity:0;pointer-events:none;transform:translateY(8px);">
+            <p class="text-[10px] font-bold uppercase tracking-widest mb-1" style="color:var(--red-text)">Alert Status</p>
+            <p class="text-[12px] leading-snug text-red-300/90">
+              Critical Allergy Conflict Detected. <em class="font-semibold" style="color:#F59E0B">Immediate Action
+                Protocol Initiated.</em>
+            </p>
+          </div>
         </div>
 
         <button
@@ -563,12 +586,12 @@
     document.addEventListener('DOMContentLoaded', () => {
       // Entrance cascade
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-      tl.to('#el-header', { opacity: 1, y: 0, duration: 0.9 })
-        .to('#el-sidebar', { opacity: 1, x: 0, duration: 0.6 }, '-=0.5')
-        .to('#el-dialogue', { opacity: 1, y: 0, duration: 0.8 }, '-=0.4')
-        .to('#el-artifact', { opacity: 1, x: 0, duration: 0.6 }, '-=0.3')
-        .to('#el-dossier', { opacity: 1, y: 0, duration: 0.6 }, '-=0.3')
-        .to('#el-mic', { opacity: 1, scale: 1, duration: 0.8, ease: 'back.out(1.5)' }, '-=0.1')
+      tl.fromTo('#el-header',   { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.9 })
+        .fromTo('#el-sidebar',  { opacity: 0, x: -12 }, { opacity: 1, x: 0, duration: 0.6 }, '-=0.5')
+        .fromTo('#el-dialogue', { opacity: 0, y: 16  }, { opacity: 1, y: 0, duration: 0.8 }, '-=0.4')
+        .fromTo('#el-artifact', { opacity: 0, x: 16  }, { opacity: 1, x: 0, duration: 0.6 }, '-=0.3')
+        .fromTo('#el-dossier',  { opacity: 0, y: 16  }, { opacity: 1, y: 0, duration: 0.6 }, '-=0.3')
+        .fromTo('#el-mic',      { opacity: 0, scale: 0.85 }, { opacity: 1, scale: 1, duration: 0.8, ease: 'back.out(1.5)' }, '-=0.1')
         .add(() => startHaloPulse());
 
       // Infinite mic halo pulse via GSAP
@@ -603,6 +626,7 @@
       const micBtn = document.querySelector('.mic-btn-gold');
       const alertBox = document.querySelector('.alert-critical');
       const scanResultText = document.querySelector('#el-artifact p.text-white');
+      const drugDescriptionText = document.getElementById('drug-description-text');
       const englishTranscript = document.querySelector('#el-dialogue p.text-\\[15px\\]');
       const hindiTranscript = document.querySelector('#el-dialogue p.text-\\[19px\\]');
 
@@ -613,11 +637,7 @@
       const laserLine = document.querySelector('.laser-line');
       let stream = null;
 
-      // Hide alert by default
-      if (alertBox) {
-        alertBox.style.display = 'none';
-        scanResultText.style.display = 'none';
-      }
+      // Alert and scan result are already opacity:0 via inline style — no display toggling needed
 
       scanBtn.addEventListener('click', async () => {
         if (!stream) {
@@ -630,8 +650,9 @@
             video.classList.remove('hidden');
             placeholderImg.classList.add('hidden');
             canvas.classList.add('hidden');
-            alertBox.style.display = 'none';
-            scanResultText.style.display = 'none';
+            gsap.to(alertBox, { opacity: 0, y: 8, duration: 0.3, onComplete: () => { alertBox.style.pointerEvents = 'none'; } });
+            gsap.to(scanResultText, { opacity: 0, duration: 0.3, onComplete: () => { scanResultText.style.pointerEvents = 'none'; } });
+            gsap.to(drugDescriptionText, { opacity: 0, duration: 0.2, onComplete: () => { drugDescriptionText.style.pointerEvents = 'none'; } });
 
             scanBtn.textContent = 'Capture Image';
             scanBtn.style.opacity = '1';
@@ -669,11 +690,18 @@
             });
             const data = await res.json();
 
-            scanResultText.style.display = 'block';
             scanResultText.innerHTML = `Scan Verified: <span class="font-normal" style="color:var(--text-muted)">${data.scan_result.drug_name}. (${data.scan_result.drug_group})</span>`;
+            scanResultText.style.pointerEvents = 'auto';
+            gsap.to(scanResultText, { opacity: 1, duration: 0.4 });
+
+            if (data.scan_result.drug_description) {
+              drugDescriptionText.textContent = data.scan_result.drug_description;
+              drugDescriptionText.style.pointerEvents = 'auto';
+              gsap.to(drugDescriptionText, { opacity: 1, duration: 0.4, delay: 0.15 });
+            }
 
             if (data.alert.triggered) {
-              alertBox.style.display = 'block';
+              alertBox.style.pointerEvents = 'auto';
               gsap.fromTo(alertBox, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5 });
               await fetch('/api/caregiver/alert', { method: 'POST' });
             }
@@ -724,6 +752,9 @@
           // TURN ON
           micBtn.style.background = 'linear-gradient(145deg, #ef4444 0%, #b91c1c 40%, #7f1d1d 100%)';
           micBtn.style.boxShadow = 'inset 0 2px 5px rgba(255,255,255,0.4), 0 0 30px rgba(239,68,68,0.7)';
+          const micLabel = document.getElementById('mic-label');
+          micLabel.textContent = 'Listening\u2026';
+          micLabel.style.color = '#ef4444';
 
           finalTranscript = ""; // Reset transcript
           if (recognition) recognition.start();
@@ -737,6 +768,9 @@
           // TURN OFF
           micBtn.style.background = ''; // Reverts to CSS class
           micBtn.style.boxShadow = '';
+          const micLabel = document.getElementById('mic-label');
+          micLabel.textContent = 'Speak to Onyx';
+          micLabel.style.color = 'var(--text-muted)';
 
           if (recognition) recognition.stop();
 
@@ -781,9 +815,10 @@
 
             // 4. Trigger Twilio Alert if OpenRouter detected an emergency/prescription need
             if (data.alert_triggered) {
-              alertBox.style.display = 'block';
-              scanResultText.style.display = 'block';
               scanResultText.innerHTML = `Voice Monitor: <span class="font-normal" style="color:#ef4444">Prescription Order Detected</span>`;
+              scanResultText.style.pointerEvents = 'auto';
+              gsap.to(scanResultText, { opacity: 1, duration: 0.4 });
+              alertBox.style.pointerEvents = 'auto';
               gsap.fromTo(alertBox, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5 });
               await fetch('/api/caregiver/alert', { method: 'POST' });
             }
