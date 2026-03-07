@@ -276,18 +276,6 @@
             <span class="opacity-25 text-xs">|</span>
             <span class="text-[11px] tracking-wide" style="color:var(--text-muted)">the voice call</span>
           </div>
-          <button class="flex items-center gap-2 px-5 py-2 rounded-full text-[11px] font-semibold tracking-wider"
-            style="background:rgba(50,90,60,0.5);border:1px solid rgba(80,140,90,0.4);color:var(--gold-light)">
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"
-              stroke-linecap="round">
-              <line x1="2" y1="6" x2="2" y2="10" />
-              <line x1="5" y1="4" x2="5" y2="12" />
-              <line x1="8" y1="2" x2="8" y2="14" />
-              <line x1="11" y1="5" x2="11" y2="11" />
-              <line x1="14" y1="7" x2="14" y2="9" />
-            </svg>
-            Voice Call
-          </button>
         </div>
 
         <!-- 3D Mesh Canvas -->
@@ -348,13 +336,19 @@
           <span class="text-[10px] tracking-wider" style="color:var(--text-muted)">the visual pill scanner</span>
         </div>
 
-        <div class="relative w-full h-[220px] rounded-xl overflow-hidden mb-4"
+        <div
+          class="relative w-full h-[220px] rounded-xl overflow-hidden mb-4 bg-[#050705] flex items-center justify-center font-bold text-gray-700"
           style="border:1px solid var(--gold-wire);box-shadow:0 4px 20px rgba(0,0,0,0.4)">
-          <img src="pill_bottle.png" alt="Amoxicillin 500mg" class="w-full h-full object-cover opacity-90" />
+          <span class="absolute z-0 text-[10px] tracking-widest text-[#D4AF37]/30 uppercase">Camera Standby</span>
+          <video id="webcam-viewer" autoplay playsinline
+            class="absolute inset-0 w-full h-full object-cover z-10 hidden"></video>
+          <canvas id="snapshot-canvas" class="absolute inset-0 w-full h-full object-cover z-20 hidden"></canvas>
+          <img id="placeholder-img" src="pill_bottle.png" alt="Amoxicillin 500mg"
+            class="absolute inset-0 w-full h-full object-cover z-20 opacity-90" />
           <div
-            class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none">
+            class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none z-30">
           </div>
-          <div class="laser-line"></div>
+          <div class="laser-line z-40 hidden"></div>
         </div>
 
         <p class="text-[12px] text-white font-medium mb-3">
@@ -603,6 +597,129 @@
           ease: 'sine.inOut'
         });
       }
+
+      // ── API WIRING ── //
+      const scanBtn = document.querySelector('.btn-scan-gold');
+      const micBtn = document.querySelector('.mic-btn-gold');
+      const alertBox = document.querySelector('.alert-critical');
+      const scanResultText = document.querySelector('#el-artifact p.text-white');
+      const englishTranscript = document.querySelector('#el-dialogue p.text-\\[15px\\]');
+      const hindiTranscript = document.querySelector('#el-dialogue p.text-\\[19px\\]');
+
+      // Webcam Drop-in
+      const video = document.getElementById('webcam-viewer');
+      const canvas = document.getElementById('snapshot-canvas');
+      const placeholderImg = document.getElementById('placeholder-img');
+      const laserLine = document.querySelector('.laser-line');
+      let stream = null;
+
+      // Hide alert by default
+      if (alertBox) {
+        alertBox.style.display = 'none';
+        scanResultText.style.display = 'none';
+      }
+
+      scanBtn.addEventListener('click', async () => {
+        if (!stream) {
+          // 1. Initialize Camera
+          scanBtn.textContent = 'Initializing Camera...';
+          scanBtn.style.opacity = '0.7';
+          try {
+            stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+            video.srcObject = stream;
+            video.classList.remove('hidden');
+            placeholderImg.classList.add('hidden');
+            canvas.classList.add('hidden');
+            alertBox.style.display = 'none';
+            scanResultText.style.display = 'none';
+
+            scanBtn.textContent = 'Capture Image';
+            scanBtn.style.opacity = '1';
+          } catch (err) {
+            console.error('Camera access denied:', err);
+            scanBtn.textContent = 'Camera Failed';
+          }
+        } else {
+          // 2. Take Snapshot & Scan
+          scanBtn.textContent = 'Scanning...';
+          scanBtn.style.opacity = '0.7';
+
+          // Draw video to canvas
+          canvas.width = video.videoWidth || 640;
+          canvas.height = video.videoHeight || 480;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+          // Stop stream, show frozen canvas
+          stream.getTracks().forEach(track => track.stop());
+          stream = null;
+          video.classList.add('hidden');
+          canvas.classList.remove('hidden');
+
+          // Fast GSAP scanning effect
+          laserLine.classList.remove('hidden');
+          gsap.fromTo(laserLine, { top: '5%' }, { top: '95%', duration: 0.5, opacity: 1, repeat: 3, yoyo: true, onComplete: () => laserLine.classList.add('hidden') });
+
+          try {
+            const res = await fetch('/api/scan', { method: 'POST' });
+            const data = await res.json();
+
+            scanResultText.style.display = 'block';
+            scanResultText.innerHTML = `Scan Verified: <span class="font-normal" style="color:var(--text-muted)">${data.scan_result.drug_name}. (${data.scan_result.drug_group})</span>`;
+
+            if (data.alert.triggered) {
+              alertBox.style.display = 'block';
+              gsap.fromTo(alertBox, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5 });
+              await fetch('/api/caregiver/alert', { method: 'POST' });
+            }
+          } catch (e) {
+            console.error("Scan failed", e);
+          } finally {
+            scanBtn.textContent = 'Scan New Medication';
+            scanBtn.style.opacity = '1';
+          }
+        }
+      });
+
+      // Voice simulation logic - Toggle ON/OFF
+      let isMicrophoneActive = false;
+      let micPulseAnimation = null;
+      let mockTimeout = null;
+
+      micBtn.addEventListener('click', () => {
+        isMicrophoneActive = !isMicrophoneActive;
+
+        if (isMicrophoneActive) {
+          // TURN ON
+          micBtn.style.background = 'linear-gradient(145deg, #ef4444 0%, #b91c1c 40%, #7f1d1d 100%)';
+          micBtn.style.boxShadow = 'inset 0 2px 5px rgba(255,255,255,0.4), 0 0 30px rgba(239,68,68,0.7)';
+
+          englishTranscript.innerHTML = "<em style='color:#ef4444'>Listening live... (Click mic to stop)</em>";
+          hindiTranscript.innerHTML = "<em style='color:#ef4444'>सुन रहा हूँ...</em>";
+
+          micPulseAnimation = gsap.to('.mic-btn-gold', { scale: 1.15, duration: 0.3, yoyo: true, repeat: -1 });
+
+        } else {
+          // TURN OFF
+          micBtn.style.background = ''; // Reverts to CSS class
+          micBtn.style.boxShadow = '';
+
+          if (micPulseAnimation) {
+            micPulseAnimation.kill();
+            gsap.to('.mic-btn-gold', { scale: 1, duration: 0.2 });
+          }
+
+          englishTranscript.innerHTML = "Processing intent...";
+          hindiTranscript.textContent = "प्रसंस्करण...";
+
+          clearTimeout(mockTimeout);
+          mockTimeout = setTimeout(() => {
+            hindiTranscript.textContent = "नमस्ते, कृपया मेरा रक्तचाप का नुस्खा फिर से मंगवाएं।";
+            englishTranscript.innerHTML = "Requesting Arthur P.'s blood pressure prescription renewal.<br>Processing intent...";
+          }, 800);
+        }
+      });
+
     });
   </script>
 </body>
