@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap"
     rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -21,23 +21,20 @@
 
   <style>
     :root {
-      --bg-page: #1c2e24;
-      --bg-sidebar: #0d1812;
-      --bg-header: rgba(20, 36, 28, 0.92);
-      --bg-dialogue: #0b1310;
-      --bg-right: #c5c2ab;
-      /* grey-greenish cream */
-      --gold: #C29F4F;
+      --gold-classic: #D4AF37;
       --gold-light: #E8D293;
       --gold-dark: #8a6e30;
-      --green-btn: #3a6845;
-      --green-badge-bg: #1e3828;
-      --green-badge-border: #4a7858;
-      --text-light: #eeeee8;
-      --text-muted-light: #8a9e92;
-      --text-dark: #2a2a26;
-      --text-dark-sub: #5a5a52;
-      --red: #8b2020;
+      --gold-wire: rgba(212, 175, 55, 0.1);
+      --gold-wire-hover: rgba(212, 175, 55, 0.2);
+      --bg-base: #050705;
+      --bg-sidebar: #080c09;
+      --panel-bg: rgba(24, 24, 22, 0.40);
+      --panel-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+      --text-primary: #f0efe8;
+      --text-muted: #8a9490;
+      --red-deep: rgba(80, 10, 10, 0.40);
+      --red-text: #ef4444;
+      --red-border: rgba(220, 60, 60, 0.3);
     }
 
     * {
@@ -47,45 +44,46 @@
     }
 
     body {
-      background: var(--bg-page);
-      color: var(--text-light);
+      background: var(--bg-base);
+      background-image:
+        radial-gradient(circle at 30% 20%, rgba(15, 28, 18, 0.4) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(12, 10, 5, 0.3) 0%, transparent 40%);
+      color: var(--text-primary);
       font-family: 'Inter', sans-serif;
       height: 100vh;
       overflow: hidden;
     }
 
-    .panel-dark {
-      background: var(--bg-dialogue);
-      border: 1px solid rgba(60, 88, 68, 0.35);
-      border-radius: 16px;
-      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+    /* ─── GLASSMORPHISM PANELS ─── */
+    .glass-panel {
+      background: var(--panel-bg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--gold-wire);
+      border-radius: 18px;
+      box-shadow: var(--panel-shadow);
     }
 
-    .panel-light {
-      background: var(--bg-right);
-      border: 1px solid rgba(150, 145, 120, 0.5);
-      border-radius: 14px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-      color: var(--text-dark);
-    }
-
+    /* ─── BADGE ─── */
     .badge-green {
-      background: var(--green-badge-bg);
-      border: 1px solid var(--green-badge-border);
-      color: #a4d4ae;
+      background: rgba(20, 45, 30, 0.6);
+      border: 1px solid rgba(80, 140, 95, 0.4);
+      color: #a8d8b4;
+      backdrop-filter: blur(8px);
     }
 
+    /* ─── SCAN LINE ─── */
     @keyframes scanLine {
       0% {
         top: 5%;
         opacity: 0;
       }
 
-      12% {
+      10% {
         opacity: 1;
       }
 
-      88% {
+      90% {
         opacity: 1;
       }
 
@@ -97,151 +95,158 @@
 
     .laser-line {
       position: absolute;
-      left: -5%;
-      right: -5%;
+      left: -8%;
+      right: -8%;
       height: 2px;
-      background: linear-gradient(90deg, transparent, #FCE08B 35%, #FFF 50%, #FCE08B 65%, transparent);
-      box-shadow: 0 0 18px 4px rgba(252, 224, 139, 0.45);
-      animation: scanLine 2.4s ease-in-out infinite;
+      background: linear-gradient(90deg, transparent 2%, rgba(212, 175, 55, 0.5) 20%, #FCE08B 40%, #FFF 50%, #FCE08B 60%, rgba(212, 175, 55, 0.5) 80%, transparent 98%);
+      box-shadow: 0 0 24px 6px rgba(212, 175, 55, 0.35), 0 0 60px 10px rgba(212, 175, 55, 0.15);
+      animation: scanLine 2.5s ease-in-out infinite;
       z-index: 10;
     }
 
-    @keyframes haloRing {
-      0% {
-        transform: scale(1);
-        opacity: 0.45;
-      }
-
-      100% {
-        transform: scale(2.4);
-        opacity: 0;
-      }
+    /* ─── MIC ─── */
+    .mic-btn-gold {
+      background: linear-gradient(145deg, #f2dfa0 0%, #D4AF37 40%, #9a7a1e 100%);
+      box-shadow:
+        inset 0 2px 5px rgba(255, 255, 255, 0.55),
+        inset 0 -4px 6px rgba(80, 50, 0, 0.45),
+        0 0 30px rgba(212, 175, 55, 0.4);
     }
 
-    .mic-halo {
+    .mic-halo-ring {
       position: absolute;
-      inset: 0;
+      inset: -8px;
       border-radius: 50%;
-      border: 1.5px solid rgba(180, 150, 60, 0.3);
-      animation: haloRing 2.5s infinite ease-out;
+      border: 1.5px solid rgba(212, 175, 55, 0.25);
       pointer-events: none;
     }
 
-    .mic-halo:nth-child(2) {
-      animation-delay: 1.25s;
-    }
-
-    .mic-glow {
+    .mic-glow-field {
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 200%;
-      height: 200%;
+      width: 250%;
+      height: 250%;
       transform: translate(-50%, -50%);
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(194, 159, 79, 0.18) 0%, transparent 60%);
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, transparent 55%);
       pointer-events: none;
     }
 
-    .mic-btn {
-      background: linear-gradient(145deg, #ecdaa0 0%, #c9a54a 40%, #9a7a22 100%);
-      box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.5), inset 0 -3px 5px rgba(80, 55, 0, 0.4), 0 6px 24px rgba(160, 130, 40, 0.35);
+    /* ─── ALLERGY BOX ─── */
+    .allergy-tag {
+      background: var(--red-deep);
+      border: 1px solid var(--red-border);
+      color: var(--red-text);
     }
 
+    /* ─── SIDEBAR ─── */
     .sb-icon {
-      color: var(--gold-dark);
-      transition: color 0.2s, background 0.2s;
+      color: var(--gold-classic);
+      transition: filter 0.2s, background 0.2s;
     }
 
-    .sb-icon:hover,
+    .sb-icon:hover {
+      filter: brightness(1.4);
+      background: rgba(212, 175, 55, 0.08);
+    }
+
     .sb-icon.active {
-      color: var(--gold);
-      background: rgba(194, 159, 79, 0.1);
+      filter: brightness(1.3);
+      background: rgba(212, 175, 55, 0.1);
     }
 
-    .btn-scan {
-      background: transparent;
-      border: 1.5px solid var(--text-dark);
-      color: var(--text-dark);
-      font-weight: 600;
-      transition: all 0.2s;
+    /* ─── SCAN BUTTON ─── */
+    .btn-scan-gold {
+      background: linear-gradient(165deg, #E6C875 0%, #C49F44 42%, #9E7A29 100%);
+      color: #0e0e0a;
+      border: 1px solid rgba(255, 235, 160, 0.5);
+      box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.5), 0 6px 18px rgba(158, 122, 41, 0.2);
+      font-weight: 700;
     }
 
-    .btn-scan:hover {
-      background: var(--text-dark);
-      color: var(--bg-right);
+    .btn-scan-gold:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+
+    /* ─── STATUS ALERT ─── */
+    .alert-critical {
+      background: rgba(60, 10, 10, 0.35);
+      border: 1px solid rgba(200, 60, 60, 0.4);
+      box-shadow: 0 4px 20px rgba(180, 40, 40, 0.1);
     }
   </style>
 </head>
 
 <body class="flex flex-col h-screen overflow-hidden text-sm">
 
-  <!-- HEADER -->
+  <!-- ─── HEADER ─────────────────────────────────────────── -->
   <header id="el-header" class="flex items-center justify-between px-6 py-4 shrink-0"
-    style="opacity:0;background:var(--bg-header);border-bottom:1px solid rgba(50,75,58,0.3)">
+    style="opacity:0;background:rgba(8,12,9,0.85);border-bottom:1px solid var(--gold-wire)">
     <div class="flex items-center gap-5">
-      <!-- Logo Icon -->
-      <div class="w-8 h-8 rounded-full flex items-center justify-center" style="border:1px solid rgba(194,159,79,0.3)">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C29F4F" stroke-width="1.5">
+      <div class="w-9 h-9 rounded-full flex items-center justify-center"
+        style="border:1px solid rgba(212,175,55,0.25);box-shadow:0 0 12px rgba(212,175,55,0.08)">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.5">
           <circle cx="12" cy="12" r="9" />
           <path
             d="M12 3v3M12 18v3M3 12h3M18 12h3M5.64 5.64l2.12 2.12M16.24 16.24l2.12 2.12M5.64 18.36l2.12-2.12M16.24 7.76l2.12-2.12" />
         </svg>
       </div>
       <div>
-        <h1 class="text-[17px] font-serif tracking-tight text-white">
-          <span style="color:var(--gold-light)">Onyx</span> Aura Concierge
+        <h1 class="text-[17px] font-serif tracking-tight">
+          <span style="color:var(--gold-light)">Onyx</span> <span class="text-white">Aura Concierge</span>
         </h1>
-        <p class="text-[10px] tracking-widest" style="color:var(--text-muted-light)">Medical Proxy Assistant <span
-            style="opacity:0.4;color:var(--gold)">✦</span> Luxury</p>
+        <p class="text-[10px] tracking-[0.2em]" style="color:var(--text-muted)">Medical Proxy Assistant <span
+            style="color:var(--gold-classic);opacity:0.4">✦</span> Luxury</p>
       </div>
-      <!-- Status -->
-      <div class="flex items-center gap-1 text-[11px] ml-4" style="color:var(--text-muted-light)">
+      <div class="flex items-center gap-1 text-[11px] ml-3" style="color:var(--text-muted)">
         <span>Bonjour, <span class="text-white font-medium">Arthur P.</span></span>
-        <span class="mx-1.5 opacity-30">|</span>
+        <span class="mx-1.5 opacity-25">|</span>
         <span>Status: <span class="text-white font-medium">Authenticated</span></span>
-        <span class="mx-1.5 opacity-30">|</span>
+        <span class="mx-1.5 opacity-25">|</span>
         <span>Secure Connection: <span class="text-white font-medium">Main Street Pharmacy.</span></span>
       </div>
     </div>
     <div class="flex items-center gap-4">
-      <button class="relative" style="color:var(--text-muted-light)">
+      <button class="relative" style="color:var(--text-muted)">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
           <path d="M13.73 21a2 2 0 0 1-3.46 0" />
         </svg>
         <span class="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full"
-          style="background:#c14545;border:1.5px solid #0d1812"></span>
+          style="background:#ef4444;border:2px solid var(--bg-base)"></span>
       </button>
-      <div class="w-9 h-9 rounded-full bg-cover bg-center"
-        style="border:2px solid var(--gold-dark);background-image:url('https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80')">
+      <div class="w-10 h-10 rounded-full bg-cover bg-center"
+        style="border:2px solid rgba(212,175,55,0.3);box-shadow:0 0 15px rgba(212,175,55,0.1);background-image:url('https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80')">
       </div>
     </div>
   </header>
 
   <div class="flex flex-1 overflow-hidden">
-    <!-- SIDEBAR -->
-    <aside id="el-sidebar" class="w-[48px] shrink-0 flex flex-col items-center py-4 gap-4"
-      style="opacity:0;background:var(--bg-sidebar);border-right:1px solid rgba(40,60,45,0.35)">
-      <button class="sb-icon active w-8 h-8 rounded-lg flex items-center justify-center">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+    <!-- ─── SIDEBAR ──────────────────────────────────────── -->
+    <aside id="el-sidebar" class="w-[50px] shrink-0 flex flex-col items-center py-4 gap-4"
+      style="opacity:0;background:var(--bg-sidebar);border-right:1px solid var(--gold-wire)">
+      <button class="sb-icon active w-9 h-9 rounded-xl flex items-center justify-center">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path
             d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
         </svg>
       </button>
-      <button class="sb-icon w-8 h-8 rounded-lg flex items-center justify-center">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <button class="sb-icon w-9 h-9 rounded-xl flex items-center justify-center">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
           <path d="M13.73 21a2 2 0 0 1-3.46 0" />
         </svg>
       </button>
-      <button class="sb-icon w-8 h-8 rounded-lg flex items-center justify-center">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <button class="sb-icon w-9 h-9 rounded-xl flex items-center justify-center">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
         </svg>
       </button>
-      <button class="sb-icon w-8 h-8 rounded-lg flex items-center justify-center">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <button class="sb-icon w-9 h-9 rounded-xl flex items-center justify-center">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="8" y1="6" x2="21" y2="6" />
           <line x1="8" y1="12" x2="21" y2="12" />
           <line x1="8" y1="18" x2="21" y2="18" />
@@ -251,8 +256,8 @@
         </svg>
       </button>
       <div class="flex-1"></div>
-      <button class="sb-icon w-8 h-8 rounded-lg flex items-center justify-center mb-3">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <button class="sb-icon w-9 h-9 rounded-xl flex items-center justify-center mb-3">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
           <polyline points="16 17 21 12 16 7" />
           <line x1="21" y1="12" x2="9" y2="12" />
@@ -260,21 +265,19 @@
       </button>
     </aside>
 
-    <!-- CONTENT GRID -->
-    <div class="flex-1 grid grid-cols-[1fr_340px] grid-rows-[1fr_1fr] gap-4 p-4 h-full">
+    <!-- ─── CONTENT GRID ─────────────────────────────────── -->
+    <div class="flex-1 grid grid-cols-[1fr_360px] grid-rows-[2fr_1fr] gap-4 p-4 h-full">
 
-      <!-- THE DIALOGUE -->
-      <section id="el-dialogue" class="panel-dark row-span-2 flex flex-col relative overflow-hidden" style="opacity:0">
-        <!-- Title row -->
-        <div class="flex items-center justify-between px-6 pt-5 pb-2 z-10 relative">
-          <div class="flex items-baseline gap-2">
-            <h2 class="text-[20px] font-serif text-white">The Dialogue</h2>
-            <span class="opacity-30 text-[11px]">|</span>
-            <span class="text-[11px]" style="color:var(--text-muted-light)">the voice call</span>
+      <!-- ═══ THE DIALOGUE ═══ -->
+      <section id="el-dialogue" class="glass-panel row-span-2 flex flex-col relative overflow-hidden" style="opacity:0">
+        <div class="flex items-center justify-between px-7 pt-6 pb-2 z-10 relative">
+          <div class="flex items-baseline gap-2.5">
+            <h2 class="text-[22px] font-serif text-white tracking-wide">The Dialogue</h2>
+            <span class="opacity-25 text-xs">|</span>
+            <span class="text-[11px] tracking-wide" style="color:var(--text-muted)">the voice call</span>
           </div>
-          <button class="flex items-center gap-2 px-4 py-2 rounded-full text-[11px] font-semibold tracking-wide"
-            style="background: var(--green-btn); border: 1px solid rgba(80,130,90,0.5); color: var(--gold-light);">
-            <!-- Waveform bars icon -->
+          <button class="flex items-center gap-2 px-5 py-2 rounded-full text-[11px] font-semibold tracking-wider"
+            style="background:rgba(50,90,60,0.5);border:1px solid rgba(80,140,90,0.4);color:var(--gold-light)">
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"
               stroke-linecap="round">
               <line x1="2" y1="6" x2="2" y2="10" />
@@ -287,41 +290,43 @@
           </button>
         </div>
 
-        <!-- 3D Waveform Canvas -->
+        <!-- 3D Mesh Canvas -->
         <div class="absolute inset-0 z-0">
           <canvas id="waveformCanvas"></canvas>
         </div>
 
         <!-- Foreground -->
         <div class="flex-1 flex flex-col justify-end z-10 relative pointer-events-none">
-          <div class="px-7 pb-5 pointer-events-auto">
-            <p class="text-[17px] text-white font-medium leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
+          <div class="px-8 pb-6 pointer-events-auto">
+            <!-- Serif Hindi text -->
+            <p
+              class="text-[19px] text-white font-serif font-medium tracking-wide leading-relaxed drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">
               नमस्ते, कृपया मेरा रक्तचाप का नुस्खा फिर से मंगवाएं।
             </p>
-            <p class="text-[14px] mt-2 leading-relaxed drop-shadow-[0_2px_6px_rgba(0,0,0,0.7)]"
-              style="color:var(--text-muted-light)">
+            <!-- Serif English text -->
+            <p class="text-[15px] font-serif tracking-wide mt-2 leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]"
+              style="color:var(--text-muted)">
               Requesting Arthur P.'s blood pressure prescription renewal.<br>Processing intent...
             </p>
 
-            <!-- Badges row -->
-            <div class="flex items-center gap-3 mt-4">
-              <span class="badge-green px-3 py-1.5 rounded-full text-[10px] font-semibold tracking-wide">Bilingual
+            <div class="flex items-center gap-3 mt-5">
+              <span class="badge-green px-3.5 py-1.5 rounded-full text-[10px] font-semibold tracking-wider">Bilingual
                 Intelligence Enabled</span>
-              <span class="badge-green px-3 py-1.5 rounded-full text-[10px] font-semibold tracking-wide">ElevenLabs
+              <span class="badge-green px-3.5 py-1.5 rounded-full text-[10px] font-semibold tracking-wider">ElevenLabs
                 Voice: 'James — Warm &amp; Calm'</span>
             </div>
 
-            <!-- Speak to Onyx + Mic (bottom center) -->
-            <div id="el-mic" class="flex items-center justify-center gap-3 mt-5" style="opacity:0">
-              <span class="text-[10px] font-semibold tracking-[0.2em] uppercase"
-                style="color:var(--text-muted-light)">Speak to Onyx</span>
-              <div class="relative w-[58px] h-[58px]">
-                <div class="mic-halo"></div>
-                <div class="mic-halo"></div>
-                <div class="mic-glow"></div>
+            <!-- SPEAK TO ONYX — large mic -->
+            <div id="el-mic" class="flex items-center justify-center gap-4 mt-7" style="opacity:0">
+              <span class="text-[11px] font-bold tracking-[0.25em] uppercase" style="color:var(--text-muted)">Speak to
+                Onyx</span>
+              <div class="relative w-[72px] h-[72px]" id="micWrap">
+                <div class="mic-halo-ring" id="haloA"></div>
+                <div class="mic-halo-ring" id="haloB" style="inset:-16px"></div>
+                <div class="mic-glow-field"></div>
                 <button
-                  class="mic-btn absolute inset-0 rounded-full flex items-center justify-center z-10 hover:scale-105 transition-transform cursor-pointer">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1408" stroke-width="2.5"
+                  class="mic-btn-gold absolute inset-0 rounded-full flex items-center justify-center z-10 hover:scale-105 transition-transform cursor-pointer">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0e0a02" stroke-width="2.5"
                     stroke-linecap="round">
                     <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
                     <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
@@ -335,64 +340,87 @@
         </div>
       </section>
 
-      <!-- THE ARTIFACT (light panel) -->
-      <section id="el-artifact" class="panel-light flex flex-col p-5 overflow-hidden" style="opacity:0">
-        <div class="flex items-baseline gap-2 mb-3">
-          <h2 class="text-[17px] font-serif" style="color:var(--text-dark)">The Artifact</h2>
-          <span class="opacity-30 text-[11px]">|</span>
-          <span class="text-[10px]" style="color:var(--text-dark-sub)">the visual pill scanner</span>
+      <!-- ═══ THE ARTIFACT ═══ -->
+      <section id="el-artifact" class="glass-panel flex flex-col p-6 overflow-hidden" style="opacity:0">
+        <div class="flex items-baseline gap-2.5 mb-4">
+          <h2 class="text-[19px] font-serif text-white tracking-wide">The Artifact</h2>
+          <span class="opacity-25 text-xs">|</span>
+          <span class="text-[10px] tracking-wider" style="color:var(--text-muted)">the visual pill scanner</span>
         </div>
-        <div class="relative w-full h-[125px] rounded-xl overflow-hidden mb-3 shadow-md"
-          style="border:1px solid rgba(0,0,0,0.08)">
-          <img src="pill_bottle.png" alt="Amoxicillin 500mg" class="w-full h-full object-cover" />
+
+        <div class="relative w-full h-[220px] rounded-xl overflow-hidden mb-4"
+          style="border:1px solid var(--gold-wire);box-shadow:0 4px 20px rgba(0,0,0,0.4)">
+          <img src="pill_bottle.png" alt="Amoxicillin 500mg" class="w-full h-full object-cover opacity-90" />
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none">
+          </div>
           <div class="laser-line"></div>
         </div>
-        <p class="text-[12px] mb-1.5" style="color:var(--text-dark)">
-          <span class="font-semibold">Scan Verified:</span> Amoxicillin 500mg. (Penicillin Group)
+
+        <p class="text-[12px] text-white font-medium mb-3">
+          Scan Verified: <span class="font-normal" style="color:var(--text-muted)">Amoxicillin 500mg. (Penicillin
+            Group)</span>
         </p>
-        <p class="text-[12px] leading-snug mb-3" style="color:var(--text-dark)">
-          <span class="font-bold uppercase" style="color:var(--red)">ALERT STATUS:</span> Critical Allergy Conflict
-          Detected. "Immediate Action Protocol Initiated."
-        </p>
-        <button class="btn-scan mt-auto w-full py-2.5 rounded-xl text-[12px] tracking-wide">Scan New Medication</button>
+
+        <div class="alert-critical rounded-lg p-3.5 mb-4">
+          <p class="text-[10px] font-bold uppercase tracking-widest mb-1" style="color:var(--red-text)">Alert Status</p>
+          <p class="text-[12px] leading-snug text-red-300/90">
+            Critical Allergy Conflict Detected. <em class="font-semibold" style="color:#F59E0B">Immediate Action
+              Protocol Initiated.</em>
+          </p>
+        </div>
+
+        <button
+          class="btn-scan-gold mt-auto w-full py-3 rounded-xl text-[12px] tracking-wider transition-all duration-200">
+          Scan New Medication
+        </button>
       </section>
 
-      <!-- THE DOSSIER (light panel) -->
-      <section id="el-dossier" class="panel-light flex flex-col p-5 overflow-hidden" style="opacity:0">
-        <div class="flex items-baseline gap-2 mb-3">
-          <h2 class="text-[17px] font-serif" style="color:var(--text-dark)">The Dossier</h2>
-          <span class="opacity-30 text-[11px]">|</span>
-          <span class="text-[10px]" style="color:var(--text-dark-sub)">Patient profile</span>
-          <div class="ml-auto flex items-center gap-1.5 opacity-40">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2">
-              <rect x="3" y="3" width="18" height="18" rx="2" />
-              <line x1="9" y1="3" x2="9" y2="21" />
-            </svg>
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2">
-              <circle cx="12" cy="12" r="1" />
-              <circle cx="19" cy="12" r="1" />
-              <circle cx="5" cy="12" r="1" />
-            </svg>
-          </div>
+      <!-- ═══ THE DOSSIER ═══ -->
+      <section id="el-dossier" class="glass-panel flex flex-col p-6 overflow-hidden" style="opacity:0">
+        <div class="flex items-baseline gap-2.5 mb-5">
+          <h2 class="text-[19px] font-serif text-white tracking-wide">The Dossier</h2>
+          <span class="opacity-25 text-xs">|</span>
+          <span class="text-[10px] tracking-wider" style="color:var(--text-muted)">Patient profile</span>
         </div>
-        <div class="text-[12px] mb-3" style="color:var(--text-dark)">
-          <p>Member Since: 2015 <span class="opacity-30 mx-1">|</span> DOB: 01/15/1950</p>
-          <p class="mt-1">High-Priority Allergies: <span class="font-bold" style="color:var(--red)">Penicillin
-              (Severe)</span></p>
+
+        <!-- Two-Column Grid -->
+        <div class="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 mb-5 text-[12px]">
+          <span class="text-[10px] uppercase tracking-[0.15em] font-semibold"
+            style="color:var(--text-muted)">Patient</span>
+          <span class="text-white font-medium">Arthur P. — Male — 76</span>
+
+          <span class="text-[10px] uppercase tracking-[0.15em] font-semibold" style="color:var(--text-muted)">DOB</span>
+          <span class="text-white">01/15/1950</span>
+
+          <span class="text-[10px] uppercase tracking-[0.15em] font-semibold"
+            style="color:var(--text-muted)">Location</span>
+          <span class="text-white">Jacksonville, FL</span>
         </div>
+
+        <!-- Crimson Allergy Box -->
+        <div class="mb-5">
+          <p class="text-[10px] uppercase tracking-[0.15em] font-bold mb-2" style="color:var(--red-text)">High-Priority
+            Allergies</p>
+          <span class="allergy-tag inline-block text-[13px] font-bold px-4 py-2 rounded-lg tracking-wide">
+            Penicillin (Severe)
+          </span>
+        </div>
+
+        <!-- Caregiver Safety Net -->
         <div class="mt-auto">
-          <h3 class="text-[12px] font-bold mb-2" style="color:var(--text-dark)">Caregiver Safety Net</h3>
-          <div class="space-y-1.5">
-            <div class="flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full shrink-0"
-                style="background:#3cb371;box-shadow:0 0 6px rgba(60,179,113,0.5)"></span>
-              <span class="text-[11px]" style="color:var(--text-dark-sub)">Caregiver (Daughter) Connection: <span
-                  class="font-semibold" style="color:#2a7a42">Active</span></span>
+          <h3 class="text-[11px] font-bold uppercase tracking-wider text-white mb-2.5">Caregiver Safety Net</h3>
+          <div class="rounded-lg p-3 space-y-2" style="background:rgba(10,14,11,0.5);border:1px solid var(--gold-wire)">
+            <div class="flex items-center gap-2.5">
+              <span class="w-2.5 h-2.5 rounded-full shrink-0"
+                style="background:#22c55e;box-shadow:0 0 10px rgba(34,197,94,0.6)"></span>
+              <span class="text-[11px]" style="color:var(--text-muted)">Caregiver (Daughter) Connection: <span
+                  class="font-semibold" style="color:#22c55e">Active</span></span>
             </div>
-            <div class="flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full shrink-0"
-                style="background:#c9a54a;box-shadow:0 0 5px rgba(194,159,79,0.4)"></span>
-              <span class="text-[11px]" style="color:var(--text-dark-sub)">Alerts Status: Immediate SMS enabled</span>
+            <div class="flex items-center gap-2.5">
+              <span class="w-2.5 h-2.5 rounded-full shrink-0"
+                style="background:var(--gold-classic);box-shadow:0 0 8px rgba(212,175,55,0.4)"></span>
+              <span class="text-[11px]" style="color:var(--text-muted)">Alerts Status: Immediate SMS enabled</span>
             </div>
           </div>
         </div>
@@ -401,11 +429,12 @@
     </div>
   </div>
 
+  <!-- ─── SCRIPTS ────────────────────────────────────────── -->
   <script>
     // ═══════════════════════════════════════════════════════
-    // Concentrated 3D Crystalline Gold Waveform
-    // Particles are concentrated in the horizontal center band
-    // forming a dense waveform-like crystalline shape
+    // Dense 3D Architectural Gold Mesh Waveform
+    // A solid structure of light, not a 2D wallpaper.
+    // Particles form a concentrated band with tight linkage.
     // ═══════════════════════════════════════════════════════
     (function () {
       const canvas = document.getElementById('waveformCanvas');
@@ -419,43 +448,37 @@
         pts.forEach(p => p.init());
       }
 
-      const NUM = 260;
+      const NUM = 320; // Dense mesh
       const pts = [];
 
       class Pt {
         constructor() { this.init(); }
         init() {
-          // Concentrate particles into a waveform band in center
-          // X: spread across full width but denser in center
-          const xBias = Math.random();
-          if (xBias < 0.6) {
-            this.x = W * 0.15 + Math.random() * W * 0.7; // center 70%
+          // 80% concentrated into center waveform band
+          const zone = Math.random();
+          if (zone < 0.80) {
+            const cx = W * 0.5;
+            const cy = H * 0.40;
+            // Gaussian-like distribution around center
+            const angle = Math.random() * Math.PI * 2;
+            const radius = Math.random() * W * 0.38;
+            this.x = cx + Math.cos(angle) * radius;
+            this.baseY = cy + Math.sin(angle) * radius * 0.35; // squished vertically
           } else {
-            this.x = Math.random() * W; // full spread
-          }
-
-          // Y: concentrated in the middle 35% of height
-          const yBias = Math.random();
-          if (yBias < 0.75) {
-            // Core waveform band
-            const centerY = H * 0.42;
-            const spread = H * 0.15;
-            this.baseY = centerY + (Math.random() - 0.5) * 2 * spread;
-          } else {
-            // Sparse outer particles
+            this.x = Math.random() * W;
             this.baseY = Math.random() * H;
           }
 
           this.y = this.baseY;
           this.z = Math.random() * 200 + 30;
-          this.vx = (Math.random() - 0.5) * 0.25;
+          this.vx = (Math.random() - 0.5) * 0.2;
           this.phaseX = Math.random() * Math.PI * 2;
           this.phaseY = Math.random() * Math.PI * 2;
-          this.r = (Math.random() * 2.5 + 0.5) * (100 / this.z);
+          this.r = (Math.random() * 2.2 + 0.4) * (100 / this.z);
 
-          // Amplitude varies: center of X gets more vertical movement
-          const xCenter = Math.abs(this.x - W / 2) / (W / 2);
-          this.ampY = (1 - xCenter * xCenter) * (Math.random() * 35 + 15);
+          // Waveform amplitude: bigger near center-X, smaller at edges
+          const distFromCenter = Math.abs(this.x - W / 2) / (W / 2);
+          this.ampY = (1 - distFromCenter * 0.7) * (Math.random() * 40 + 10);
         }
 
         update(t) {
@@ -463,11 +486,11 @@
           if (this.x < -30) this.x = W + 30;
           if (this.x > W + 30) this.x = -30;
 
-          // Vertical oscillation creates the "waveform" shape
-          const wave = Math.sin(t * 0.008 + this.phaseY) * this.ampY;
-          // Second harmonic for complexity
-          const wave2 = Math.sin(t * 0.005 + this.phaseX) * this.ampY * 0.3;
-          this.y = this.baseY + wave + wave2;
+          // Multi-frequency wave motion
+          const w1 = Math.sin(t * 0.006 + this.phaseY) * this.ampY;
+          const w2 = Math.sin(t * 0.004 + this.phaseX * 2) * this.ampY * 0.4;
+          const w3 = Math.cos(t * 0.009 + this.phaseY * 0.5) * this.ampY * 0.15;
+          this.y = this.baseY + w1 + w2 + w3;
         }
       }
 
@@ -480,9 +503,9 @@
         pts.forEach(p => p.update(t));
 
         const sorted = [...pts].sort((a, b) => b.z - a.z);
-        const LINK = 75;
+        const LINK = 65; // Tighter links = denser mesh
 
-        // Triangulated facets
+        // ─── PASS 1: Filled Triangles (solid architectural look) ───
         for (let i = 0; i < sorted.length; i++) {
           const a = sorted[i];
           for (let j = i + 1; j < sorted.length; j++) {
@@ -492,63 +515,61 @@
             for (let k = j + 1; k < sorted.length; k++) {
               const c = sorted[k];
               const d2 = Math.hypot(b.x - c.x, b.y - c.y);
+              if (d2 > LINK) continue;
               const d3 = Math.hypot(c.x - a.x, c.y - a.y);
-              if (d2 < LINK && d3 < LINK) {
-                const avgZ = (a.z + b.z + c.z) / 3;
-                const depth = Math.max(0.05, 1 - (avgZ - 30) / 200);
-                const shimmer = Math.sin((a.x + b.y + t) * 0.01) * 0.5 + 0.5;
-                ctx.beginPath();
-                ctx.moveTo(a.x, a.y);
-                ctx.lineTo(b.x, b.y);
-                ctx.lineTo(c.x, c.y);
-                ctx.closePath();
-                ctx.fillStyle = `rgba(210,175,60,${depth * 0.08 * (0.3 + shimmer)})`;
-                ctx.fill();
-                break;
-              }
+              if (d3 > LINK) continue;
+
+              const avgZ = (a.z + b.z + c.z) / 3;
+              const depth = Math.max(0.05, 1 - (avgZ - 30) / 200);
+              // Directional lighting shimmer
+              const light = Math.sin((a.x * 0.005 + b.y * 0.003 + t * 0.008)) * 0.5 + 0.5;
+              ctx.beginPath();
+              ctx.moveTo(a.x, a.y);
+              ctx.lineTo(b.x, b.y);
+              ctx.lineTo(c.x, c.y);
+              ctx.closePath();
+              ctx.fillStyle = `rgba(212,175,55,${depth * 0.1 * (0.3 + light * 0.7)})`;
+              ctx.fill();
+              break;
             }
           }
         }
 
-        // Edges
+        // ─── PASS 2: Wireframe Edges ───
         for (let i = 0; i < sorted.length; i++) {
           const a = sorted[i];
           let links = 0;
-          for (let j = i + 1; j < sorted.length && links < 5; j++) {
+          for (let j = i + 1; j < sorted.length && links < 6; j++) {
             const b = sorted[j];
             const dist = Math.hypot(a.x - b.x, a.y - b.y);
             if (dist < LINK) {
               links++;
               const avgZ = (a.z + b.z) / 2;
-              const depth = Math.max(0.08, 1 - (avgZ - 30) / 200);
+              const depth = Math.max(0.1, 1 - (avgZ - 30) / 200);
               ctx.beginPath();
               ctx.moveTo(a.x, a.y);
               ctx.lineTo(b.x, b.y);
-              ctx.strokeStyle = `rgba(194,159,79,${depth * (1 - dist / LINK) * 0.5})`;
+              ctx.strokeStyle = `rgba(194,159,79,${depth * (1 - dist / LINK) * 0.55})`;
               ctx.lineWidth = Math.max(0.4, 80 / avgZ);
               ctx.stroke();
             }
           }
         }
 
-        // Draw a dotted horizontal reference line through center of waveform
-        const centerY = H * 0.42;
-        ctx.setLineDash([3, 6]);
-        ctx.beginPath();
-        ctx.moveTo(W * 0.05, centerY);
-        ctx.lineTo(W * 0.95, centerY);
-        ctx.strokeStyle = 'rgba(194,159,79,0.12)';
-        ctx.lineWidth = 1;
-        ctx.stroke();
-        ctx.setLineDash([]);
-
-        // Dots
+        // ─── PASS 3: Vertex Dots ───
         sorted.forEach(p => {
           const depth = Math.max(0.15, 1 - (p.z - 30) / 200);
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(220,195,100,${depth * 0.85})`;
+          ctx.fillStyle = `rgba(232,210,147,${depth * 0.9})`;
           ctx.fill();
+          // Bright core for closest particles
+          if (p.z < 80) {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r * 0.5, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255,240,200,${depth * 0.5})`;
+            ctx.fill();
+          }
         });
 
         requestAnimationFrame(frame);
@@ -559,15 +580,46 @@
       frame();
     })();
 
-    // GSAP
+    // ═══════════════════════════════════════════════════════
+    // GSAP Entrance + Infinite Mic Halo Pulse
+    // ═══════════════════════════════════════════════════════
     document.addEventListener('DOMContentLoaded', () => {
+      // Entrance cascade
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-      tl.to('#el-header', { opacity: 1, y: 0, duration: 0.8 })
+      tl.to('#el-header', { opacity: 1, y: 0, duration: 0.9 })
         .to('#el-sidebar', { opacity: 1, x: 0, duration: 0.6 }, '-=0.5')
-        .to('#el-dialogue', { opacity: 1, y: 0, duration: 0.7 }, '-=0.3')
-        .to('#el-artifact', { opacity: 1, x: 0, duration: 0.5 }, '-=0.3')
-        .to('#el-dossier', { opacity: 1, y: 0, duration: 0.5 }, '-=0.2')
-        .to('#el-mic', { opacity: 1, scale: 1, duration: 0.7, ease: 'back.out(1.3)' }, '-=0.1');
+        .to('#el-dialogue', { opacity: 1, y: 0, duration: 0.8 }, '-=0.4')
+        .to('#el-artifact', { opacity: 1, x: 0, duration: 0.6 }, '-=0.3')
+        .to('#el-dossier', { opacity: 1, y: 0, duration: 0.6 }, '-=0.3')
+        .to('#el-mic', { opacity: 1, scale: 1, duration: 0.8, ease: 'back.out(1.5)' }, '-=0.1')
+        .add(() => startHaloPulse());
+
+      // Infinite mic halo pulse via GSAP
+      function startHaloPulse() {
+        gsap.to('#haloA', {
+          scale: 2.2, opacity: 0,
+          duration: 2.2,
+          repeat: -1,
+          ease: 'power2.out',
+          transformOrigin: 'center center'
+        });
+        gsap.to('#haloB', {
+          scale: 2.6, opacity: 0,
+          duration: 2.5,
+          repeat: -1,
+          delay: 1.1,
+          ease: 'power2.out',
+          transformOrigin: 'center center'
+        });
+        // Subtle mic button breathing
+        gsap.to('.mic-btn-gold', {
+          boxShadow: 'inset 0 2px 5px rgba(255,255,255,0.55), inset 0 -4px 6px rgba(80,50,0,0.45), 0 0 50px rgba(212,175,55,0.5)',
+          duration: 1.5,
+          repeat: -1,
+          yoyo: true,
+          ease: 'sine.inOut'
+        });
+      }
     });
   </script>
 </body>
