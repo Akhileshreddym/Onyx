@@ -141,10 +141,10 @@ async def generate_speech(request: TTSRequest):
          voice_id = "cjVigY5qzO86HvfPbP6X" # Eric
          
     try:
-        audio_generator = await tts_client.generate(
+        audio_generator = tts_client.text_to_speech.convert(
             text=request.text,
-            voice=voice_id,
-            model="eleven_multilingual_v2"
+            voice_id=voice_id,
+            model_id="eleven_multilingual_v2"
         )
         
         # Buffer the async generator
@@ -264,6 +264,7 @@ async def caregiver_alert():
         try:
             import tempfile
             import requests
+            import uuid
             
             debug_info = "Starting TTS synthesis..."
             print(f"  ✓ {debug_info}")
@@ -295,17 +296,26 @@ async def caregiver_alert():
             debug_info = f"Audio uploaded: {public_mp3_url}"
             print(f"  ✓ {debug_info}")
             
-            # 4. Make the Twilio Call using inline TwiML
+            # 4. Create Twilio call with inline TwiML (properly formatted)
             from twilio.rest import Client
             twilio_client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
             
-            twiml = f"<Response><Play>{public_mp3_url}</Play></Response>"
+            # Create proper TwiML that plays and hangs up
+            from twilio.twiml.voice_response import VoiceResponse
+            
+            response = VoiceResponse()
+            response.play(public_mp3_url)
+            response.hangup()
+            
+            twiml_string = str(response)
+            debug_info = f"TwiML created: {twiml_string[:100]}..."
+            print(f"  ✓ {debug_info}")
             
             debug_info = f"Initiating Twilio call to {CAREGIVER_PHONE_NUMBER}..."
             print(f"  ⏳ {debug_info}")
             
             call = twilio_client.calls.create(
-                twiml=twiml,
+                twiml=twiml_string,
                 to=CAREGIVER_PHONE_NUMBER,
                 from_=TWILIO_PHONE_NUMBER
             )
