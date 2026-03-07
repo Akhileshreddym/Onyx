@@ -238,44 +238,101 @@ async def scan_medication(request: ScanRequest):
 
 @app.post("/api/caregiver/alert")
 async def caregiver_alert():
-    """Confirms an emergency SMS dispatch via Twilio."""
+    """Places an emergency phone call via Twilio and plays ElevenLabs TTS."""
     patient_data = load_patient_data()
-    caregiver = patient_data.get("caregiver", {})
     patient_name = patient_data.get("patient", {}).get("first_name", "Arthur")
-    caregiver_relationship = caregiver.get("relationship", "Caregiver")
+    voice_pref = patient_data.get("patient", {}).get("preferences", {}).get("voice_id", "pqHfZKP75CvOlQylNhV4")
     
     TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
     TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
     TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER")
     CAREGIVER_PHONE_NUMBER = os.getenv("CAREGIVER_PHONE_NUMBER")
     
-    message_text = f"Onyx Emergency Alert: Critical Allergy Conflict detected for {patient_name}. Immediate action required."
+    # Text to speak on the phone
+    message_text = f"Hello, this is Onyx Concierge calling from the Proxy Dashboard. We need to place an immediate prescription order for {patient_name}. Please check the system."
     status = "FAILED"
-    provider = "Twilio (Simulated - Missing Keys)"
+    provider = "Twilio Voice (Simulated)"
+    debug_info = ""
+    
+    print(f"\n📞 CAREGIVER ALERT TRIGGERED")
+    print(f"  Patient: {patient_name}")
+    print(f"  Caregiver Number: {CAREGIVER_PHONE_NUMBER}")
+    print(f"  Twilio From: {TWILIO_PHONE_NUMBER}")
+    print(f"  Account SID: {TWILIO_ACCOUNT_SID[:10]}..." if TWILIO_ACCOUNT_SID else "  Account SID: MISSING")
     
     if TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN and TWILIO_PHONE_NUMBER and CAREGIVER_PHONE_NUMBER:
         try:
+            import tempfile
+            import requests
+            
+            debug_info = "Starting TTS synthesis..."
+            print(f"  ✓ {debug_info}")
+            
+            # 1. Synthesize ElevenLabs Audio
+            audio_generator = tts_client.text_to_speech.convert(
+                text=message_text,
+                voice_id=voice_pref,
+                model_id="eleven_multilingual_v2"
+            )
+            audio_bytes = b"".join([chunk async for chunk in audio_generator])
+            debug_info = f"TTS complete. Audio size: {len(audio_bytes)} bytes"
+            print(f"  ✓ {debug_info}")
+            
+            # 2. Save MP3 to a temp file
+            tmp_path = tempfile.mktemp(suffix=".mp3")
+            with open(tmp_path, "wb") as f:
+                f.write(audio_bytes)
+            debug_info = f"Temp file saved: {tmp_path}"
+            print(f"  ✓ {debug_info}")
+                
+            # 3. Upload to tmpfiles.org to get a public URL for Twilio to fetch
+            with open(tmp_path, "rb") as f:
+                upload_res = requests.post("https://tmpfiles.org/api/v1/upload", files={"file": f}).json()
+            
+            # tmpfiles.org gives URL like http://tmpfiles.org/123/file.mp3
+            # We must use the direct link: http://tmpfiles.org/dl/123/file.mp3
+            public_mp3_url = upload_res["data"]["url"].replace("tmpfiles.org/", "tmpfiles.org/dl/")
+            debug_info = f"Audio uploaded: {public_mp3_url}"
+            print(f"  ✓ {debug_info}")
+            
+            # 4. Make the Twilio Call using inline TwiML
             from twilio.rest import Client
             twilio_client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
-            message = twilio_client.messages.create(
-                body=message_text,
-                from_=TWILIO_PHONE_NUMBER,
-                to=CAREGIVER_PHONE_NUMBER
+            
+            twiml = f"<Response><Play>{public_mp3_url}</Play></Response>"
+            
+            debug_info = f"Initiating Twilio call to {CAREGIVER_PHONE_NUMBER}..."
+            print(f"  ⏳ {debug_info}")
+            
+            call = twilio_client.calls.create(
+                twiml=twiml,
+                to=CAREGIVER_PHONE_NUMBER,
+                from_=TWILIO_PHONE_NUMBER
             )
-            status = message.status
-            provider = "Twilio (Live)"
+            status = call.status
+            provider = "Twilio Live Call (ElevenLabs Audio)"
+            debug_info = f"Call created! Status: {call.status}. Call SID: {call.sid}"
+            print(f"  ✓ {debug_info}")
+            
         except Exception as e:
-            print(f"Twilio API Error: {e}")
+            debug_info = f"Error: {str(e)}"
+            print(f"  ✗ {debug_info}")
             message_text = f"Error: {str(e)}"
     else:
+        missing = []
+        if not TWILIO_ACCOUNT_SID: missing.append("TWILIO_ACCOUNT_SID")
+        if not TWILIO_AUTH_TOKEN: missing.append("TWILIO_AUTH_TOKEN")
+        if not TWILIO_PHONE_NUMBER: missing.append("TWILIO_PHONE_NUMBER")
+        if not CAREGIVER_PHONE_NUMBER: missing.append("CAREGIVER_PHONE_NUMBER")
+        debug_info = f"Missing credentials: {', '.join(missing)}"
+        print(f"  ✗ {debug_info}")
         status = "DELIVERED"
 
     return JSONResponse(content={
         "status": status,
-        "recipient": caregiver.get("name", "Unknown"),
-        "relationship": caregiver.get("relationship", "Unknown"),
         "message": message_text,
         "provider": provider,
+        "debug": debug_info,
     })
 
 # ── Static Files (frontend) ────────────────────────────────
