@@ -1,0 +1,62 @@
+{
+  "patient": {
+    "id": "ONX-2024-00742",
+    "first_name": "Arthur",
+    "last_name": "Pendelton",
+    "date_of_birth": "01/15/1950",
+    "age": 76,
+    "gender": "Male",
+    "location": {
+      "city": "Jacksonville",
+      "state": "FL",
+      "zip": "32224"
+    },
+    "primary_physician": "Dr. Eleanor Voss",
+    "insurance": "Medicare Advantage — Plan Gold"
+  },
+  "allergies": [
+    {
+      "substance": "Penicillin",
+      "severity": "Severe",
+      "reaction": "Anaphylaxis",
+      "priority": "HIGH",
+      "verified": true
+    }
+  ],
+  "current_medications": [
+    {
+      "name": "Lisinopril",
+      "dosage": "10mg",
+      "frequency": "Once daily",
+      "purpose": "Blood Pressure"
+    },
+    {
+      "name": "Metformin",
+      "dosage": "500mg",
+      "frequency": "Twice daily",
+      "purpose": "Type 2 Diabetes"
+    },
+    {
+      "name": "Atorvastatin",
+      "dosage": "20mg",
+      "frequency": "Once daily",
+      "purpose": "Cholesterol"
+    }
+  ],
+  "caregiver": {
+    "relationship": "Daughter",
+    "name": "Margaret Pendelton-Hayes",
+    "phone": "+1-904-555-0173",
+    "connection_status": "Active",
+    "sms_alerts_enabled": true,
+    "notification_provider": "Twilio"
+  },
+  "emergency_log": [
+    {
+      "timestamp": "2026-03-07T10:42:00Z",
+      "type": "ALLERGY_CONFLICT",
+      "message": "Emergency SMS sent to Daughter: Pharmacy out of stock / Allergy detected",
+      "status": "DELIVERED"
+    }
+  ]
+}
