@@ -661,7 +661,12 @@
           gsap.fromTo(laserLine, { top: '5%' }, { top: '95%', duration: 0.5, opacity: 1, repeat: 3, yoyo: true, onComplete: () => laserLine.classList.add('hidden') });
 
           try {
-            const res = await fetch('/api/scan', { method: 'POST' });
+            const imageDataUrl = canvas.toDataURL('image/jpeg');
+            const res = await fetch('/api/scan', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ image: imageDataUrl })
+            });
             const data = await res.json();
 
             scanResultText.style.display = 'block';
@@ -684,9 +689,35 @@
       // Voice simulation logic - Toggle ON/OFF
       let isMicrophoneActive = false;
       let micPulseAnimation = null;
-      let mockTimeout = null;
 
-      micBtn.addEventListener('click', () => {
+      // Initialize Web Speech API
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      let recognition = null;
+      let finalTranscript = "";
+
+      if (SpeechRecognition) {
+        recognition = new SpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+
+        recognition.onresult = (event) => {
+          let interimTranscript = "";
+          for (let i = event.resultIndex; i < event.results.length; ++i) {
+            if (event.results[i].isFinal) {
+              finalTranscript += event.results[i][0].transcript + " ";
+            } else {
+              interimTranscript += event.results[i][0].transcript;
+            }
+          }
+          englishTranscript.innerHTML = `<em style='color:#ef4444'>${finalTranscript} <span style='opacity:0.6'>${interimTranscript}</span></em>`;
+        };
+
+        recognition.onerror = (event) => {
+          console.error("Speech recognition error:", event.error);
+        };
+      }
+
+      micBtn.addEventListener('click', async () => {
         isMicrophoneActive = !isMicrophoneActive;
 
         if (isMicrophoneActive) {
@@ -694,7 +725,10 @@
           micBtn.style.background = 'linear-gradient(145deg, #ef4444 0%, #b91c1c 40%, #7f1d1d 100%)';
           micBtn.style.boxShadow = 'inset 0 2px 5px rgba(255,255,255,0.4), 0 0 30px rgba(239,68,68,0.7)';
 
-          englishTranscript.innerHTML = "<em style='color:#ef4444'>Listening live... (Click mic to stop)</em>";
+          finalTranscript = ""; // Reset transcript
+          if (recognition) recognition.start();
+
+          englishTranscript.innerHTML = "<em style='color:#ef4444'>Listening live... (Speak now, click mic to stop)</em>";
           hindiTranscript.innerHTML = "<em style='color:#ef4444'>सुन रहा हूँ...</em>";
 
           micPulseAnimation = gsap.to('.mic-btn-gold', { scale: 1.15, duration: 0.3, yoyo: true, repeat: -1 });
@@ -704,6 +738,8 @@
           micBtn.style.background = ''; // Reverts to CSS class
           micBtn.style.boxShadow = '';
 
+          if (recognition) recognition.stop();
+
           if (micPulseAnimation) {
             micPulseAnimation.kill();
             gsap.to('.mic-btn-gold', { scale: 1, duration: 0.2 });
@@ -712,14 +748,52 @@
           englishTranscript.innerHTML = "Processing intent...";
           hindiTranscript.textContent = "प्रसंस्करण...";
 
-          clearTimeout(mockTimeout);
-          mockTimeout = setTimeout(() => {
-            hindiTranscript.textContent = "नमस्ते, कृपया मेरा रक्तचाप का नुस्खा फिर से मंगवाएं।";
-            englishTranscript.innerHTML = "Requesting Arthur P.'s blood pressure prescription renewal.<br>Processing intent...";
-          }, 800);
+          try {
+            // 1. Send the real captured transcript to OpenRouter 
+            // Fallback to a mock string only if the microphone didn't pick anything up (e.g. they clicked too fast)
+            const transcriptPayload = finalTranscript.trim() || "I am testing the microphone but nothing was heard.";
+
+            const res = await fetch('/api/chat', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ transcript: transcriptPayload })
+            });
+
+            const data = await res.json();
+
+            // 2. Update UI
+            englishTranscript.innerHTML = `Request: ${transcriptPayload}<br><span style="color:var(--gold-light)">Intent:</span> ${data.english_intent}`;
+            hindiTranscript.textContent = data.hindi_intent;
+
+            // 3. Play audio from ElevenLabs target lang (Hindi)
+            const ttsRes = await fetch('/api/tts', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ text: data.hindi_intent, language: "hi" })
+            });
+
+            if (ttsRes.ok) {
+              const blob = await ttsRes.blob();
+              const audioUrl = URL.createObjectURL(blob);
+              const audio = new Audio(audioUrl);
+              audio.play();
+            }
+
+            // 4. Trigger Twilio Alert if OpenRouter detected an emergency/prescription need
+            if (data.alert_triggered) {
+              alertBox.style.display = 'block';
+              scanResultText.style.display = 'block';
+              scanResultText.innerHTML = `Voice Monitor: <span class="font-normal" style="color:#ef4444">Prescription Order Detected</span>`;
+              gsap.fromTo(alertBox, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5 });
+              await fetch('/api/caregiver/alert', { method: 'POST' });
+            }
+
+          } catch (e) {
+            console.error("Voice flow failed", e);
+            englishTranscript.innerHTML = "<span class='text-red-500'>Connection Error. Check API Keys.</span>";
+          }
         }
       });
-
     });
   </script>
 </body>
