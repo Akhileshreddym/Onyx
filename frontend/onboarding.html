@@ -104,8 +104,12 @@
 </head>
 
 <body>
+    <!-- ─── DECORATIVE BACKGROUND ─── -->
+    <canvas id="bgCanvas" class="fixed inset-0 z-0 pointer-events-none opacity-40"></canvas>
+    <div class="fixed inset-0 z-0 pointer-events-none bg-gradient-to-b from-transparent via-black/20 to-black"></div>
+
     <!-- Header -->
-    <header class="w-full flex justify-between items-center px-8 py-6 z-20" id="header-anim">
+    <header class="w-full flex justify-between items-center px-8 py-6 z-20 relative" id="header-anim">
         <h1 class="text-2xl font-serif tracking-tight">
             <span style="color:var(--gold-classic)">Onyx</span> <span class="text-white fade-in">Concierge</span>
         </h1>
@@ -121,12 +125,7 @@
     </header>
 
     <!-- Main Content -->
-    <main class="flex-1 flex flex-col items-center justify-center -mt-10 px-4 z-10">
-
-        <!-- Background decorative ambient glow -->
-        <div
-            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#D4AF37] opacity-[0.03] rounded-full blur-[100px] pointer-events-none">
-        </div>
+    <main class="relative z-10 w-full max-w-xl mx-auto p-4 flex flex-col items-center mt-8">
 
         <!-- Central Ingestion Card -->
         <div class="glass-card w-full max-w-md rounded-2xl p-8 relative overflow-hidden" id="main-card">
@@ -193,21 +192,65 @@
 
         let selectedFile = null;
 
-        // --- GSAP Entrance Animations ---
-        gsap.fromTo("#header-anim",
-            { y: -20, opacity: 0 },
-            { y: 0, opacity: 1, duration: 1, ease: "power3.out", delay: 0.1 }
-        );
+        // --- Premium GSAP Entrance Animations ---
+        const tl = gsap.timeline();
 
-        gsap.fromTo("#main-card",
-            { y: 30, opacity: 0, scale: 0.98 },
-            { y: 0, opacity: 1, scale: 1, duration: 1.2, ease: "expo.out", delay: 0.3 }
-        );
+        // Reveal the header and subtitle with a staggered blur fade-in
+        tl.fromTo("#header-anim h1",
+            { y: 30, opacity: 0, filter: "blur(10px)" },
+            { y: 0, opacity: 1, filter: "blur(0px)", duration: 1.2, ease: "power4.out" }
+        )
+            .fromTo("#header-anim p",
+                { y: 20, opacity: 0 },
+                { y: 0, opacity: 1, duration: 1, ease: "power3.out" },
+                "-=0.9"
+            )
 
-        gsap.fromTo("#footer-anim",
-            { y: 10, opacity: 0 },
-            { y: 0, opacity: 1, duration: 1, ease: "power2.out", delay: 0.8 }
-        );
+            // 3D Flip & Scale reveal for the Glass Card
+            .fromTo("#main-card",
+                { y: 80, opacity: 0, scale: 0.9, rotationX: 15 },
+                { y: 0, opacity: 1, scale: 1, rotationX: 0, duration: 1.4, ease: "expo.out", transformPerspective: 1000 },
+                "-=0.8"
+            )
+
+            // Stagger the internal card elements (texts, dropzone, button) dropping in one by one
+            .fromTo("#main-card > *",
+                { y: 20, opacity: 0 },
+                { y: 0, opacity: 1, duration: 0.8, stagger: 0.15, ease: "back.out(1.2)" },
+                "-=0.9"
+            )
+
+            // Final fade for the footer
+            .fromTo("#footer-anim",
+                { opacity: 0 },
+                { opacity: 1, duration: 1, ease: "power2.inOut" },
+                "-=0.5"
+            );
+
+        // Continuous subtle floating animation for the main card after load
+        tl.add(() => {
+            gsap.to("#main-card", {
+                y: "-=8",
+                duration: 3,
+                ease: "sine.inOut",
+                yoyo: true,
+                repeat: -1
+            });
+
+            // Ambient background orb floating animations
+            gsap.to(".orb-1", {
+                x: "+=50", y: "+=30", rotation: 5,
+                duration: 8, ease: "sine.inOut", yoyo: true, repeat: -1
+            });
+            gsap.to(".orb-2", {
+                x: "-=60", y: "+=50", rotation: -10,
+                duration: 10, ease: "sine.inOut", yoyo: true, repeat: -1
+            });
+            gsap.to(".orb-3", {
+                x: "+=40", y: "-=40", scale: 1.1,
+                duration: 7, ease: "sine.inOut", yoyo: true, repeat: -1
+            });
+        });
 
         // --- Drag & Drop Logic ---
 
@@ -346,6 +389,86 @@
                 });
             }
         });
+
+        // --- Premium Canvas Particle Network ---
+        (function () {
+            const canvas = document.getElementById('bgCanvas');
+            const ctx = canvas.getContext('2d');
+            let width, height, particles;
+
+            function init() {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+                particles = [];
+                // Dramatically increased density (lower divisor means more particles)
+                const particleCount = Math.floor((width * height) / 5000); // Responsive density
+
+                for (let i = 0; i < particleCount; i++) {
+                    particles.push(new Particle());
+                }
+            }
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                    this.vx = (Math.random() - 0.5) * 0.5;
+                    this.vy = (Math.random() - 0.5) * 0.5;
+                    // Much larger particles
+                    this.radius = Math.random() * 4 + 2.0;
+                }
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    if (this.x < 0 || this.x > width) this.vx = -this.vx;
+                    if (this.y < 0 || this.y > height) this.vy = -this.vy;
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(212, 175, 55, 0.7)'; // Slightly brighter
+                    ctx.fill();
+                }
+            }
+
+            function animate() {
+                requestAnimationFrame(animate);
+                ctx.clearRect(0, 0, width, height);
+
+                for (let i = 0; i < particles.length; i++) {
+                    particles[i].update();
+                    particles[i].draw();
+
+                    // Draw connecting lines
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+
+                        // Increased connection distance for more lines
+                        if (distance < 160) {
+                            ctx.beginPath();
+                            ctx.strokeStyle = `rgba(212, 175, 55, ${0.25 * (1 - distance / 160)})`;
+                            ctx.lineWidth = 1.5;
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+
+            init();
+            animate();
+
+            window.addEventListener('resize', () => {
+                const oldParticles = particles;
+                init();
+                // Optionally transfer some old positions if desired, but a fresh init handles resizing cleanly
+            });
+        })();
 
     </script>
 </body>

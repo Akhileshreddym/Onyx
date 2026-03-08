@@ -1,59 +1,58 @@
 {
   "patient": {
-    "id": "91024-MGR",
-    "first_name": "Maria",
-    "last_name": "Ramirez",
-    "date_of_birth": "08/22/1961",
-    "age": 64,
-    "gender": "Female",
+    "id": "88492-AXP",
+    "first_name": "Jack",
+    "last_name": "Mullen",
+    "date_of_birth": "01/15/1950",
+    "age": 76,
+    "gender": null,
     "location": {
-      "city": "Orlando",
+      "city": "Jacksonville",
       "state": "FL",
-      "zip": "32801"
+      "zip": "32223"
     },
-    "primary_physician": "Elena Rostova, MD",
-    "insurance": "UnitedHealthcare / AARP Medicare Advantage"
+    "primary_physician": "Dr. Marcus Vance, MD",
+    "insurance": "Medicare Part B / Florida Blue Supplemental"
   },
   "allergies": [
     {
-      "substance": "NSAIDs (Ibuprofen / Naproxen)",
+      "substance": "PENICILLIN",
       "severity": "Severe",
-      "reaction": "Gastrointestinal Bleeding / Severe Urticaria",
+      "reaction": "Anaphylaxis / Airway Constriction",
       "priority": "HIGH",
       "verified": true
     },
     {
-      "substance": "LATEX",
+      "substance": "SULFA DRUGS",
       "severity": "Mild",
-      "reaction": "Contact Dermatitis",
+      "reaction": "Rash",
       "priority": "LOW",
       "verified": true
     }
   ],
   "current_medications": [
     {
-      "name": "Metformin",
-      "dosage": "500mg",
-      "frequency": "Twice daily with meals",
-      "purpose": "Blood Sugar Control",
+      "name": "Lisinopril",
+      "dosage": "10mg",
+      "frequency": "Take 1 tablet by mouth daily",
+      "purpose": "Blood Pressure Management",
       "days_supply": 30,
-      "last_fill_date": "2025-02-01",
+      "last_fill_date": "2024-01-01",
       "reminder_days_before": 3
     },
     {
-      "name": "Levothyroxine",
-      "dosage": "50mcg",
-      "frequency": "Daily 30 minutes before breakfast",
-      "purpose": "Thyroid Hormone Replacement",
+      "name": "Atorvastatin",
+      "dosage": "20mg",
+      "frequency": "Take 1 tablet by mouth daily at bedtime",
+      "purpose": "Cholesterol",
       "days_supply": 30,
-      "last_fill_date": "2025-02-01",
+      "last_fill_date": "2024-01-01",
       "reminder_days_before": 3
     }
   ],
-  "refill_reminders": {},
   "caregiver": {
-    "relationship": "Son",
-    "name": "Carlos Ramirez",
+    "relationship": "Daughter",
+    "name": "Sarah Pendelton",
     "phone": null,
     "connection_status": "Active",
     "sms_alerts_enabled": true,
@@ -106,5 +105,6 @@
       "bookmarked": false,
       "allergy_conflict": false
     }
-  ]
+  ],
+  "refill_reminders": {}
 }

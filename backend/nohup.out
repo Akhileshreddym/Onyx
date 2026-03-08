@@ -42,3 +42,193 @@ Step 5: Pharmacist said YES - building confirmation response...
 Step 6: Confirmation TwiML ready: 223 chars
 ✅ SUCCESS: Confirmation response ready
 INFO:     98.81.231.136:0 - "POST /api/pharmacy/response HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50796 - "GET /onboarding HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50847 - "GET /onboarding HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50847 - "GET /onboarding HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50925 - "GET /onboarding HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50970 - "GET /onboarding HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51033 - "GET /onboarding HTTP/1.1" 200 OK
+File received: Maria G Health Record.pdf
+Gemini Raw Output: {
+  "patient": {
+    "id": "91024-MGR",
+    "first_name": "Maria",
+    "last_name": "Ramirez",
+    "date_of_birth": "08/22/1961",
+    "age": 64,
+    "gender": null,
+    "location": {
+      "city": "Orlando",
+      "state": "FL",
+      "zip": "32801"
+    },
+    "primary_physician": "Elena Rostova",
+    "insurance": "UnitedHealthcare / AARP Medicare Advantage"
+  },
+  "allergies": [
+    {
+      "substance": "Ibuprofen",
+      "severity": null,
+      "reaction": "Gastrointestinal Bleeding / Severe Urticaria",
+      "priority": "HIGH",
+      "verified": true
+    },
+    {
+      "substance": "Naproxen",
+      "severity": null,
+      "reaction": "Gastrointestinal Bleeding / Severe Urticaria",
+      "priority": "HIGH",
+      "verified": true
+    },
+    {
+      "substance": "LATEX",
+      "severity": null,
+      "reaction": "Contact Dermatitis",
+      "priority": "LOW",
+      "verified": true
+    }
+  ],
+  "current_medications": [
+    {
+      "name": "Metformin",
+      "dosage": "500mg",
+      "frequency": "twice daily with meals",
+      "purpose": "Blood Sugar Control",
+      "days_supply": 30,
+      "last_fill_date": "2026-03-06",
+      "reminder_days_before": 3
+    },
+    {
+      "name": "Levothyroxine",
+      "dosage": "50mcg",
+      "frequency": "daily 30 minutes before breakfast",
+      "purpose": "Thyroid Hormone Replacement",
+      "days_supply": 30,
+      "last_fill_date": "2026-03-06",
+      "reminder_days_before": 3
+    }
+  ],
+  "caregiver": {
+    "relationship": "Son",
+    "name": "Carlos Ramirez",
+    "phone": null,
+    "connection_status": "Active",
+    "sms_alerts_enabled": true,
+    "notification_provider": "Twilio"
+  },
+  "emergency_log": []
+}
+INFO:     127.0.0.1:51035 - "POST /api/process_report HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51035 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51035 - "GET /api/patient HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51035 - "GET /api/refill/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51055 - "GET /api/notifications HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51035 - "GET /api/scan/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51058 - "GET /api/scan/history?bookmarked_only=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51058 - "GET /api/scan/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51058 - "GET /api/notifications HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51058 - "GET / HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:51058 - "GET /api/patient HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51058 - "GET /api/refill/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51071 - "GET /api/notifications HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51058 - "GET /api/scan/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51081 - "GET /onboarding HTTP/1.1" 200 OK
+File received: Jack Mullen Health Record.pdf
+Gemini Raw Output: {
+  "patient": {
+    "id": "88492-AXP",
+    "first_name": "Jack",
+    "last_name": "Mullen",
+    "date_of_birth": "01/15/1950",
+    "age": 76,
+    "gender": null,
+    "location": {
+      "city": "Jacksonville",
+      "state": "FL",
+      "zip": "32223"
+    },
+    "primary_physician": "Dr. Marcus Vance, MD",
+    "insurance": "Medicare Part B / Florida Blue Supplemental"
+  },
+  "allergies": [
+    {
+      "substance": "PENICILLIN",
+      "severity": "Severe",
+      "reaction": "Anaphylaxis / Airway Constriction",
+      "priority": "HIGH",
+      "verified": true
+    },
+    {
+      "substance": "SULFA DRUGS",
+      "severity": "Mild",
+      "reaction": "Rash",
+      "priority": "LOW",
+      "verified": true
+    }
+  ],
+  "current_medications": [
+    {
+      "name": "Lisinopril",
+      "dosage": "10mg",
+      "frequency": "Take 1 tablet by mouth daily",
+      "purpose": "Blood Pressure Management",
+      "days_supply": 30,
+      "last_fill_date": "2024-01-01",
+      "reminder_days_before": 3
+    },
+    {
+      "name": "Atorvastatin",
+      "dosage": "20mg",
+      "frequency": "Take 1 tablet by mouth daily at bedtime",
+      "purpose": "Cholesterol",
+      "days_supply": 30,
+      "last_fill_date": "2024-01-01",
+      "reminder_days_before": 3
+    }
+  ],
+  "caregiver": {
+    "relationship": "Daughter",
+    "name": "Sarah Pendelton",
+    "phone": null,
+    "connection_status": "Active",
+    "sms_alerts_enabled": true,
+    "notification_provider": "Twilio"
+  },
+  "emergency_log": []
+}
+INFO:     127.0.0.1:51083 - "POST /api/process_report HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51083 - "GET /api/patient HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51083 - "GET /api/refill/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51087 - "GET /api/notifications HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51089 - "GET /api/scan/history HTTP/1.1" 200 OK
+
+📞 PHARMACY CALL INITIATED
+  Patient: Jack
+  Request: Routine refill for Lisinopril, Atorvastatin to ensure the patient gets their refills on time.
+  Intent: Routine refill for Lisinopril, Atorvastatin to ensure the patient gets their refills on time.
+  Calling Pharmacy: +19049103559
+  From: +18638801249
+  ✓ Synthesizing message for pharmacy...
+  ✓ TTS complete. Audio size: 659583 bytes
+  ⬆️ Uploading pharmacy_1.mp3 to CDN...
+  ✓ Uploaded to CDN: https://n.uguu.se/QybLvFOS.mp3
+  ✓ Audio URL ready: https://n.uguu.se/QybLvFOS.mp3
+  ✓ Pharmacy call TwiML prepared
+  ⏳ 🤙 Initiating call to pharmacy...
+  ✓ ✅ Pharmacy call queued! Status: queued. Call SID: CA878f8816773021e42232d9d9b87d27d7
+INFO:     127.0.0.1:51093 - "POST /api/refill/request-pharmacy HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51093 - "GET /api/notifications HTTP/1.1" 200 OK
+
+🔥🔥🔥 PHARMACY RESPONSE ENDPOINT CALLED 🔥🔥🔥
+Request method: POST
+Request headers: {'content-type': 'application/x-www-form-urlencoded; charset=UTF-8', 'x-twilio-service-flow-event': '%7B%22flow_id%22%3A%22voice_twimlverb_01kk6f42hzed4b5fkkan5ge0cy%22%2C%22type%22%3A%22api_event%22%2C%22action%22%3A%22twiml_fetch%22%2C%22sub_action%22%3A%22completed%22%2C%22result%22%3A%22success%22%2C%22metadata%22%3A%7B%22transfer_type%22%3A%22call_transfer_url%22%7D%7D', 'i-twilio-idempotency-token': '38b9b2ed-4bb6-4a5c-8ab0-66e3dad77249', 'x-twilio-answertimeout': 'PT15S', 'x-twilio-signature': 'lPdVziWAfqi8wCrrss42Gjnfbn4=', 'accept': '*/*', 'content-length': '509', 'x-home-region': 'us1', 'host': '51c77af4df5a1f.lhr.life', 'user-agent': 'TwilioProxy/1.1', 'connection': 'close', 'x-forwarded-for': '54.81.135.3', 'x-forwarded-proto': 'https', 'forwarded': 'for=54.81.135.3;proto=https'}
+Step 1: Reading form data...
+Form data keys: ['msg', 'Called', 'Digits', 'ToState', 'CallerCountry', 'Direction', 'CallerState', 'ToZip', 'CallSid', 'To', 'CallerZip', 'ToCountry', 'FinishedOnKey', 'CalledZip', 'ApiVersion', 'CalledCity', 'CallStatus', 'From', 'AccountSid', 'CalledCountry', 'CallerCity', 'ToCity', 'FromCountry', 'Caller', 'FromCity', 'CalledState', 'FromZip', 'FromState']
+Step 2: Parsed data
+  Speech: ''
+  Digits: '1'
+Step 3: Detection logic - said_no = False
+Step 5: Pharmacist said YES - building confirmation response...
+Step 6: Confirmation TwiML ready: 223 chars
+✅ SUCCESS: Confirmation response ready
+INFO:     54.81.135.3:0 - "POST /api/pharmacy/response HTTP/1.1" 200 OK
