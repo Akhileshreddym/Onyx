@@ -232,3 +232,13 @@ Step 5: Pharmacist said YES - building confirmation response...
 Step 6: Confirmation TwiML ready: 223 chars
 ✅ SUCCESS: Confirmation response ready
 INFO:     54.81.135.3:0 - "POST /api/pharmacy/response HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51148 - "GET /api/notifications HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51152 - "GET /api/refill/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51152 - "GET /api/scan/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51160 - "GET /onboarding HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52361 - "GET / HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:52361 - "GET /pill_bottle.png HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:52361 - "GET /api/patient HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52361 - "GET /api/refill/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52362 - "GET /api/notifications HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52364 - "GET /api/scan/history HTTP/1.1" 200 OK
