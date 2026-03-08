@@ -239,21 +239,25 @@
     </div>
     <div class="flex items-center gap-4">
       <div class="relative">
-        <button id="header-bell" type="button" class="relative p-1 rounded-lg transition-colors hover:opacity-90" style="color:var(--text-muted)" aria-label="Notifications" aria-expanded="false" aria-haspopup="true">
+        <button id="header-bell" type="button" class="relative p-1 rounded-lg transition-colors hover:opacity-90"
+          style="color:var(--text-muted)" aria-label="Notifications" aria-expanded="false" aria-haspopup="true">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
             <path d="M13.73 21a2 2 0 0 1-3.46 0" />
           </svg>
-          <span id="header-bell-badge" class="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center text-[10px] font-semibold hidden"
+          <span id="header-bell-badge"
+            class="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center text-[10px] font-semibold hidden"
             style="background:var(--gold-classic);color:#0e0a02;border:2px solid var(--bg-base)">0</span>
         </button>
-        <div id="header-notifications-dropdown" class="absolute right-0 top-full mt-1.5 w-[320px] max-h-[320px] overflow-hidden flex flex-col hidden rounded-xl shadow-xl z-50"
+        <div id="header-notifications-dropdown"
+          class="absolute right-0 top-full mt-1.5 w-[320px] max-h-[320px] overflow-hidden flex flex-col hidden rounded-xl shadow-xl z-50"
           style="background:var(--bg-sidebar);border:1px solid var(--gold-wire)">
           <div class="p-3 shrink-0" style="border-bottom:1px solid rgba(255,255,255,0.08)">
             <h3 class="text-[13px] font-serif text-white tracking-wide">Notifications</h3>
           </div>
           <div id="header-notifications-list" class="flex-1 overflow-y-auto p-2 space-y-1.5 min-h-[80px]">
-            <p id="header-notifications-empty" class="text-[12px] py-4 text-center hidden" style="color:var(--text-muted)">No new notifications.</p>
+            <p id="header-notifications-empty" class="text-[12px] py-4 text-center hidden"
+              style="color:var(--text-muted)">No new notifications.</p>
           </div>
         </div>
       </div>
@@ -274,18 +278,21 @@
             d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
         </svg>
       </button>
-      <button id="sb-bell" class="sb-icon w-9 h-9 rounded-xl flex items-center justify-center" type="button" aria-label="Refill reminders">
+      <button id="sb-bell" class="sb-icon w-9 h-9 rounded-xl flex items-center justify-center" type="button"
+        aria-label="Refill reminders">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
           <path d="M13.73 21a2 2 0 0 1-3.46 0" />
         </svg>
       </button>
-      <button id="sb-bookmark" class="sb-icon w-9 h-9 rounded-xl flex items-center justify-center" type="button" aria-label="Scan history">
+      <button id="sb-bookmark" class="sb-icon w-9 h-9 rounded-xl flex items-center justify-center" type="button"
+        aria-label="Scan history">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
         </svg>
       </button>
-      <button id="sb-menu" class="sb-icon w-9 h-9 rounded-xl flex items-center justify-center" type="button" aria-label="Menu">
+      <button id="sb-menu" class="sb-icon w-9 h-9 rounded-xl flex items-center justify-center" type="button"
+        aria-label="Menu">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="8" y1="6" x2="21" y2="6" />
           <line x1="8" y1="12" x2="21" y2="12" />
@@ -306,13 +313,20 @@
     </aside>
 
     <!-- Sidebar slide-out panel -->
-    <div id="sidebar-panel-overlay" class="fixed inset-0 z-40 hidden" style="background:rgba(0,0,0,0.3)" aria-hidden="true"></div>
-    <div id="sidebar-panel" class="fixed left-[50px] top-0 bottom-0 z-50 w-[320px] max-h-full overflow-hidden flex flex-col hidden"
+    <div id="sidebar-panel-overlay" class="fixed inset-0 z-40 hidden" style="background:rgba(0,0,0,0.3)"
+      aria-hidden="true"></div>
+    <div id="sidebar-panel"
+      class="fixed left-[50px] top-0 bottom-0 z-50 w-[320px] max-h-full overflow-hidden flex flex-col hidden"
       style="background:var(--bg-sidebar);border-right:1px solid var(--gold-wire);box-shadow:4px 0 24px rgba(0,0,0,0.4)">
-      <div class="p-4 flex items-center justify-between shrink-0" style="border-bottom:1px solid rgba(255,255,255,0.08)">
+      <div class="p-4 flex items-center justify-between shrink-0"
+        style="border-bottom:1px solid rgba(255,255,255,0.08)">
         <h2 id="sidebar-panel-title" class="text-[16px] font-serif text-white tracking-wide">Menu</h2>
-        <button id="sidebar-panel-close" type="button" class="sb-icon w-8 h-8 rounded-lg flex items-center justify-center" aria-label="Close panel">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        <button id="sidebar-panel-close" type="button"
+          class="sb-icon w-8 h-8 rounded-lg flex items-center justify-center" aria-label="Close panel">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
         </button>
       </div>
       <div class="flex-1 overflow-y-auto p-4">
@@ -326,198 +340,245 @@
             <span>Bookmarks only</span>
           </label>
           <div id="panel-bookmarks-list" class="space-y-2 min-h-[80px]"></div>
-          <p id="panel-bookmarks-empty" class="text-[12px] opacity-70 hidden" style="color:var(--text-muted)">No scans yet.</p>
+          <p id="panel-bookmarks-empty" class="text-[12px] opacity-70 hidden" style="color:var(--text-muted)">No scans
+            yet.</p>
         </div>
         <div id="panel-menu" class="flex flex-col gap-2">
-          <button type="button" class="sidebar-menu-item text-left px-3 py-2.5 rounded-lg text-[13px] transition-colors" style="color:var(--text-muted);background:rgba(255,255,255,0.04)" data-panel="refill">Refill reminders</button>
-          <button type="button" class="sidebar-menu-item text-left px-3 py-2.5 rounded-lg text-[13px] transition-colors" style="color:var(--text-muted);background:rgba(255,255,255,0.04)" data-panel="bookmarks">Scan history</button>
-          <a href="/onboarding" class="px-3 py-2.5 rounded-lg text-[13px] transition-colors" style="color:var(--text-muted);background:rgba(255,255,255,0.04);text-decoration:none">Onboarding</a>
-          <button type="button" id="panel-menu-dossier" class="text-left px-3 py-2.5 rounded-lg text-[13px] transition-colors" style="color:var(--text-muted);background:rgba(255,255,255,0.04)">The Dossier</button>
+          <button type="button" class="sidebar-menu-item text-left px-3 py-2.5 rounded-lg text-[13px] transition-colors"
+            style="color:var(--text-muted);background:rgba(255,255,255,0.04)" data-panel="refill">Refill
+            reminders</button>
+          <button type="button" class="sidebar-menu-item text-left px-3 py-2.5 rounded-lg text-[13px] transition-colors"
+            style="color:var(--text-muted);background:rgba(255,255,255,0.04)" data-panel="bookmarks">Scan
+            history</button>
+          <a href="/onboarding" class="px-3 py-2.5 rounded-lg text-[13px] transition-colors"
+            style="color:var(--text-muted);background:rgba(255,255,255,0.04);text-decoration:none">Onboarding</a>
+          <button type="button" id="panel-menu-dossier"
+            class="text-left px-3 py-2.5 rounded-lg text-[13px] transition-colors"
+            style="color:var(--text-muted);background:rgba(255,255,255,0.04)">The Dossier</button>
         </div>
       </div>
     </div>
 
-    <!-- ─── CONTENT GRID ─────────────────────────────────── -->
-    <div class="flex-1 grid grid-cols-[1fr_360px] grid-rows-[2fr_1fr] gap-4 p-4 h-full">
+    <!-- ─── CONTENT DASHBOARD WRAPPER ────────────────────── -->
+    <div class="flex-1 flex flex-col p-4 gap-4 h-full min-w-0">
 
       <!-- Refill reminder banner -->
-      <div id="refill-banner" class="col-span-2 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
+      <div id="refill-banner"
+        class="rounded-xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shrink-0"
         style="display:none;background:rgba(212,175,55,0.12);border:1px solid var(--gold-wire)">
         <p id="refill-banner-message" class="text-[13px] text-white/95 font-medium"></p>
         <div class="flex items-center gap-2 shrink-0">
           <button id="refill-contact-pharmacist-btn" type="button"
             class="px-4 py-2 rounded-lg text-[12px] font-semibold transition-all duration-200"
             style="background:var(--gold-classic);color:#0e0a02">Contact pharmacist for refills</button>
-          <button id="refill-banner-dismiss" type="button" class="text-[11px] opacity-70 hover:opacity-100" style="color:var(--text-muted)">Dismiss</button>
+          <button id="refill-banner-dismiss" type="button" class="text-[11px] opacity-70 hover:opacity-100"
+            style="color:var(--text-muted)">Dismiss</button>
         </div>
       </div>
 
-      <!-- ═══ THE DIALOGUE ═══ -->
-      <section id="el-dialogue" class="glass-panel row-span-2 flex flex-col relative overflow-hidden" style="opacity:0">
-        <div class="flex items-center justify-between px-7 pt-6 pb-2 z-10 relative">
-          <div class="flex items-baseline gap-2.5">
-            <h2 class="text-[22px] font-serif text-white tracking-wide">The Dialogue</h2>
-            <span class="opacity-25 text-xs">|</span>
-            <span class="text-[11px] tracking-wide" style="color:var(--text-muted)">the voice call</span>
+      <!-- ─── CONTENT GRID ─────────────────────────────────── -->
+      <div class="flex-1 min-h-0 grid grid-cols-[1fr_360px] grid-rows-[2fr_1fr] gap-4">
+
+        <!-- ═══ THE DIALOGUE ═══ -->
+        <section id="el-dialogue" class="glass-panel row-span-2 flex flex-col relative overflow-hidden"
+          style="opacity:0">
+          <div class="flex items-center justify-between px-7 pt-6 pb-2 z-10 relative">
+            <div class="flex items-baseline gap-2.5">
+              <h2 class="text-[22px] font-serif text-white tracking-wide">The Dialogue</h2>
+              <span class="opacity-25 text-xs">|</span>
+              <span class="text-[11px] tracking-wide" style="color:var(--text-muted)">the voice call</span>
+            </div>
           </div>
-        </div>
 
-        <!-- 3D Mesh Canvas -->
-        <div class="absolute inset-0 z-0">
-          <canvas id="waveformCanvas"></canvas>
-        </div>
+          <!-- 3D Mesh Canvas -->
+          <div class="absolute inset-0 z-0">
+            <canvas id="waveformCanvas"></canvas>
+          </div>
 
-        <!-- Foreground -->
-        <div class="flex-1 flex flex-col justify-end z-10 relative pointer-events-none">
-          <div class="px-8 pb-6 pointer-events-auto">
-            <!-- Transcript scroll container -->
-            <div style="max-height:120px;overflow-y:auto;padding-right:4px;">
-              <!-- Onyx Response Text -->
-              <p
-                class="text-[19px] text-white font-serif font-medium tracking-wide leading-relaxed drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">
-                Welcome. Tap the microphone and tell me how I can help.
-              </p>
-              <!-- Serif English text -->
-              <p class="text-[15px] font-serif tracking-wide mt-2 leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]"
-                style="color:var(--text-muted)">
-                Requesting <span id="dialogue-patient-name">Arthur P.</span>'s blood pressure prescription
-                renewal.<br>Processing intent...
-              </p>
-            </div>
+          <!-- Foreground -->
+          <div class="flex-1 flex flex-col justify-end z-10 relative pointer-events-none">
+            <div class="px-8 pb-6 pointer-events-auto">
+              <!-- Transcript scroll container -->
+              <div style="max-height:120px;overflow-y:auto;padding-right:4px;">
+                <!-- Onyx Response Text -->
+                <p
+                  class="text-[19px] text-white font-serif font-medium tracking-wide leading-relaxed drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">
+                  Welcome. Tap the microphone and tell me how I can help.
+                </p>
+                <!-- Serif English text -->
+                <p class="text-[15px] font-serif tracking-wide mt-2 leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]"
+                  style="color:var(--text-muted)">
+                  Requesting <span id="dialogue-patient-name">Arthur P.</span>'s blood pressure prescription
+                  renewal.<br>Processing intent...
+                </p>
+              </div>
 
-            <div class="flex items-center gap-3 mt-5">
-              <span class="badge-green px-3.5 py-1.5 rounded-full text-[10px] font-semibold tracking-wider">Bilingual
-                Intelligence Enabled</span>
-              <span class="badge-green px-3.5 py-1.5 rounded-full text-[10px] font-semibold tracking-wider">ElevenLabs
-                Voice: 'James — Warm &amp; Calm'</span>
-            </div>
+              <div class="flex items-center gap-3 mt-5">
+                <span class="badge-green px-3.5 py-1.5 rounded-full text-[10px] font-semibold tracking-wider">Bilingual
+                  Intelligence Enabled</span>
+                <span class="badge-green px-3.5 py-1.5 rounded-full text-[10px] font-semibold tracking-wider">ElevenLabs
+                  Voice: 'James — Warm &amp; Calm'</span>
+              </div>
 
-            <!-- SPEAK TO ONYX — large mic -->
-            <div id="el-mic" class="flex items-center justify-center gap-4 mt-7" style="opacity:0">
-              <span id="mic-label" class="text-[11px] font-bold tracking-[0.25em] uppercase"
-                style="color:var(--text-muted)">Speak to
-                Onyx</span>
-              <div class="relative w-[72px] h-[72px]" id="micWrap">
-                <div class="mic-halo-ring" id="haloA"></div>
-                <div class="mic-halo-ring" id="haloB" style="inset:-16px"></div>
-                <div class="mic-glow-field"></div>
-                <button
-                  class="mic-btn-gold absolute inset-0 rounded-full flex items-center justify-center z-10 hover:scale-105 transition-transform cursor-pointer">
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0e0a02" stroke-width="2.5"
-                    stroke-linecap="round">
-                    <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
-                    <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-                    <line x1="12" y1="19" x2="12" y2="23" />
-                    <line x1="8" y1="23" x2="16" y2="23" />
-                  </svg>
-                </button>
+              <!-- SPEAK TO ONYX — large mic -->
+              <div id="el-mic" class="flex items-center justify-center gap-4 mt-7" style="opacity:0">
+                <span id="mic-label" class="text-[11px] font-bold tracking-[0.25em] uppercase"
+                  style="color:var(--text-muted)">Speak to
+                  Onyx</span>
+                <div class="relative w-[72px] h-[72px]" id="micWrap">
+                  <div class="mic-halo-ring" id="haloA"></div>
+                  <div class="mic-halo-ring" id="haloB" style="inset:-16px"></div>
+                  <div class="mic-glow-field"></div>
+                  <button
+                    class="mic-btn-gold absolute inset-0 rounded-full flex items-center justify-center z-10 hover:scale-105 transition-transform cursor-pointer">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0e0a02" stroke-width="2.5"
+                      stroke-linecap="round">
+                      <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+                      <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                      <line x1="12" y1="19" x2="12" y2="23" />
+                      <line x1="8" y1="23" x2="16" y2="23" />
+                    </svg>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- ═══ THE ARTIFACT ═══ -->
-      <section id="el-artifact" class="glass-panel flex flex-col p-6 overflow-hidden" style="opacity:0">
-        <div class="flex items-baseline gap-2.5 mb-4">
-          <h2 class="text-[19px] font-serif text-white tracking-wide">The Artifact</h2>
-          <span class="opacity-25 text-xs">|</span>
-          <span class="text-[10px] tracking-wider" style="color:var(--text-muted)">the visual pill scanner</span>
-        </div>
+        <!-- ═══ THE ARTIFACT ═══ -->
+        <section id="el-artifact" class="glass-panel flex flex-col p-6 overflow-hidden" style="opacity:0">
+          <div class="flex items-baseline gap-2.5 mb-4">
+            <h2 class="text-[19px] font-serif text-white tracking-wide">The Artifact</h2>
+            <span class="opacity-25 text-xs">|</span>
+            <span class="text-[10px] tracking-wider" style="color:var(--text-muted)">the visual pill scanner</span>
+          </div>
 
-        <div
-          class="relative w-full h-[220px] rounded-xl overflow-hidden mb-4 bg-[#050705] flex items-center justify-center font-bold text-gray-700"
-          style="border:1px solid var(--gold-wire);box-shadow:0 4px 20px rgba(0,0,0,0.4)">
-          <span class="absolute z-0 text-[10px] tracking-widest text-[#D4AF37]/30 uppercase">Camera Standby</span>
-          <video id="webcam-viewer" autoplay playsinline
-            class="absolute inset-0 w-full h-full object-cover z-10 hidden"></video>
-          <canvas id="snapshot-canvas" class="absolute inset-0 w-full h-full object-cover z-20 hidden"></canvas>
-          <img id="placeholder-img" src="pill_bottle.png" alt="Amoxicillin 500mg"
-            class="absolute inset-0 w-full h-full object-cover z-20 opacity-90" />
           <div
-            class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none z-30">
-          </div>
-          <div class="laser-line z-40 hidden"></div>
-        </div>
-
-        <div id="scan-results-wrap" style="min-height:130px;display:flex;flex-direction:column;gap:10px;">
-          <p class="text-[12px] text-white font-medium"
-            style="opacity:0;pointer-events:none;transition:opacity 0.4s ease;">
-            Scan Verified: <span class="font-normal" style="color:var(--text-muted)">Amoxicillin 500mg. (Penicillin
-              Group)</span>
-          </p>
-
-          <p id="drug-description-text" class="text-[11.5px] leading-snug"
-            style="color:var(--text-muted);opacity:0;pointer-events:none;transition:opacity 0.4s ease 0.1s;"></p>
-
-          <div class="alert-critical rounded-lg p-3.5" style="opacity:0;pointer-events:none;transform:translateY(8px);">
-            <p class="text-[10px] font-bold uppercase tracking-widest mb-1" style="color:var(--red-text)">Alert Status
-            </p>
-            <p class="text-[12px] leading-snug text-red-300/90">
-              Critical Allergy Conflict Detected. <em class="font-semibold" style="color:#F59E0B">Immediate Action
-                Protocol Initiated.</em>
-            </p>
-          </div>
-        </div>
-
-        <button
-          class="btn-scan-gold mt-auto w-full py-3 rounded-xl text-[12px] tracking-wider transition-all duration-200">
-          Scan New Medication
-        </button>
-
-        <!-- Scan history -->
-        <div class="mt-4 pt-4" style="border-top:1px solid rgba(255,255,255,0.08)">
-          <div class="flex items-center justify-between mb-2">
-            <h3 class="text-[12px] font-serif text-white tracking-wide">Scan history</h3>
-            <label class="flex items-center gap-1.5 cursor-pointer">
-              <input type="checkbox" id="scan-history-bookmarks-only" class="rounded" style="accent-color:var(--gold-classic)">
-              <span class="text-[10px]" style="color:var(--text-muted)">Bookmarks only</span>
-            </label>
-          </div>
-          <div id="scan-history-list" class="space-y-2 max-h-[200px] overflow-y-auto text-[11px]"
-            style="color:var(--text-muted)">
-            <p id="scan-history-empty" class="opacity-70">No scans yet.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- ═══ THE DOSSIER ═══ -->
-      <section id="el-dossier" class="glass-panel flex flex-col p-5 overflow-hidden" style="opacity:0">
-        <div class="flex items-baseline gap-2 mb-3">
-          <h2 class="text-[17px] font-serif text-white tracking-wide">The Dossier</h2>
-          <span class="opacity-25 text-xs">|</span>
-          <span class="text-[10px] tracking-wider" style="color:var(--text-muted)">Patient profile</span>
-        </div>
-
-        <div class="text-[11.5px] mb-3 pb-3"
-          style="color:var(--text-muted);border-bottom:1px solid rgba(255,255,255,0.06)">
-          <p>Member Since: <span id="dossier-member-year">2015</span> <span class="opacity-25 mx-1">|</span> DOB: <span
-              id="dossier-dob">01/15/1950</span></p>
-          <p class="mt-1">High-Priority Allergies: <span id="dossier-allergies" class="font-bold"
-              style="color:var(--red-text)">Penicillin
-              (Severe)</span></p>
-        </div>
-
-        <div class="mt-auto">
-          <h3 class="text-[11px] font-bold text-white mb-2">Caregiver Safety Net</h3>
-          <div class="space-y-1.5">
-            <div class="flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full shrink-0"
-                style="background:#22c55e;box-shadow:0 0 8px rgba(34,197,94,0.5)"></span>
-              <span class="text-[11px]" style="color:var(--text-muted)">Caregiver (<span
-                  id="dossier-cg-rel">Daughter</span>) Connection: <span id="dossier-cg-status" class="font-semibold"
-                  style="color:#22c55e">Active</span></span>
+            class="relative w-full h-[220px] rounded-xl overflow-hidden mb-4 bg-[#050705] flex items-center justify-center font-bold text-gray-700"
+            style="border:1px solid var(--gold-wire);box-shadow:0 4px 20px rgba(0,0,0,0.4)">
+            <span class="absolute z-0 text-[10px] tracking-widest text-[#D4AF37]/30 uppercase">Camera Standby</span>
+            <video id="webcam-viewer" autoplay playsinline
+              class="absolute inset-0 w-full h-full object-cover z-10 hidden"></video>
+            <canvas id="snapshot-canvas" class="absolute inset-0 w-full h-full object-cover z-20 hidden"></canvas>
+            <img id="placeholder-img" src="pill_bottle.png" alt="Amoxicillin 500mg"
+              class="absolute inset-0 w-full h-full object-cover z-20 opacity-90" />
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none z-30">
             </div>
-            <div class="flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full shrink-0"
-                style="background:var(--gold-classic);box-shadow:0 0 6px rgba(212,175,55,0.4)"></span>
-              <span id="dossier-cg-alerts" class="text-[11px]" style="color:var(--text-muted)">Alerts Status: Immediate
-                SMS enabled</span>
+            <div class="laser-line z-40 hidden"></div>
+          </div> <!-- Close Webcam Viewer -->
+
+          <style>
+            #scan-history-scroll-box::-webkit-scrollbar {
+              width: 4px;
+            }
+
+            #scan-history-scroll-box::-webkit-scrollbar-track {
+              background: transparent;
+            }
+
+            #scan-history-scroll-box::-webkit-scrollbar-thumb {
+              background: rgba(212, 175, 55, 0.3);
+              border-radius: 4px;
+            }
+
+            #scan-history-scroll-box::-webkit-scrollbar-thumb:hover {
+              background: rgba(212, 175, 55, 0.6);
+            }
+          </style>
+
+          <!-- Master Scrollable Info Container -->
+          <div id="scan-history-scroll-box" class="flex-1 overflow-y-auto pr-2 mb-4"
+            style="display:flex;flex-direction:column;gap:16px;">
+
+            <!-- Live AI Results -->
+            <div id="scan-results-wrap" class="flex flex-col gap-2.5">
+              <p class="text-[12px] text-white font-medium"
+                style="opacity:0;pointer-events:none;transition:opacity 0.4s ease;">
+                Scan Verified: <span class="font-normal" style="color:var(--text-muted)">Amoxicillin 500mg.
+                  (Penicillin
+                  Group)</span>
+              </p>
+
+              <p id="drug-description-text" class="text-[11.5px] leading-snug"
+                style="color:var(--text-muted);opacity:0;pointer-events:none;transition:opacity 0.4s ease 0.1s;"></p>
+
+              <div class="alert-critical rounded-lg p-3.5"
+                style="opacity:0;pointer-events:none;transform:translateY(8px);">
+                <p class="text-[10px] font-bold uppercase tracking-widest mb-1" style="color:var(--red-text)">Alert
+                  Status
+                </p>
+                <p class="text-[12px] leading-snug text-red-300/90">
+                  Critical Allergy Conflict Detected. <em class="font-semibold" style="color:#F59E0B">Immediate Action
+                    Protocol Initiated.</em>
+                </p>
+              </div>
+            </div>
+
+            <!-- Team Scan History Component -->
+            <div class="pt-4" style="border-top:1px solid rgba(255,255,255,0.08)">
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="text-[12px] font-serif text-white tracking-wide">Scan history</h3>
+                <label class="flex items-center gap-1.5 cursor-pointer">
+                  <input type="checkbox" id="scan-history-bookmarks-only" class="rounded"
+                    style="accent-color:var(--gold-classic)">
+                  <span class="text-[10px]" style="color:var(--text-muted)">Bookmarks only</span>
+                </label>
+              </div>
+              <div id="scan-history-list" class="space-y-2 text-[11px]" style="color:var(--text-muted)">
+                <p id="scan-history-empty" class="opacity-70">No scans yet.</p>
+              </div>
+            </div>
+
+          </div> <!-- End Master Scroll Container -->
+
+          <!-- Anchored Button (Always visible at bottom) -->
+          <button
+            class="btn-scan-gold mt-auto w-full py-3 rounded-xl text-[12px] tracking-wider transition-all duration-200 shrink-0">
+            Scan New Medication
+          </button>
+        </section>
+
+        <!-- ═══ THE DOSSIER ═══ -->
+        <section id="el-dossier" class="glass-panel flex flex-col p-5 overflow-hidden" style="opacity:0">
+          <div class="flex items-baseline gap-2 mb-3">
+            <h2 class="text-[17px] font-serif text-white tracking-wide">The Dossier</h2>
+            <span class="opacity-25 text-xs">|</span>
+            <span class="text-[10px] tracking-wider" style="color:var(--text-muted)">Patient profile</span>
+          </div>
+
+          <div class="text-[11.5px] mb-3 pb-3"
+            style="color:var(--text-muted);border-bottom:1px solid rgba(255,255,255,0.06)">
+            <p>Member Since: <span id="dossier-member-year">2015</span> <span class="opacity-25 mx-1">|</span> DOB:
+              <span id="dossier-dob">01/15/1950</span>
+            </p>
+            <p class="mt-1">High-Priority Allergies: <span id="dossier-allergies" class="font-bold"
+                style="color:var(--red-text)">Penicillin
+                (Severe)</span></p>
+          </div>
+
+          <div class="mt-auto">
+            <h3 class="text-[11px] font-bold text-white mb-2">Caregiver Safety Net</h3>
+            <div class="space-y-1.5">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full shrink-0"
+                  style="background:#22c55e;box-shadow:0 0 8px rgba(34,197,94,0.5)"></span>
+                <span class="text-[11px]" style="color:var(--text-muted)">Caregiver (<span
+                    id="dossier-cg-rel">Daughter</span>) Connection: <span id="dossier-cg-status" class="font-semibold"
+                    style="color:#22c55e">Active</span></span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full shrink-0"
+                  style="background:var(--gold-classic);box-shadow:0 0 6px rgba(212,175,55,0.4)"></span>
+                <span id="dossier-cg-alerts" class="text-[11px]" style="color:var(--text-muted)">Alerts Status:
+                  Immediate
+                  SMS enabled</span>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
+      </div>
     </div>
   </div>
 

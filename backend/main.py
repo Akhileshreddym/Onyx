@@ -5,6 +5,7 @@ Serves static frontend + API stubs for the hackathon demo.
 from __future__ import annotations
 
 import json
+from typing import Union, Optional, List
 import uuid
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
@@ -550,11 +551,15 @@ async def scan_medication(request: ScanRequest):
         conflict = "Penicillin" in allergies
     else:
         try:
+            allergies_str = ", ".join(allergies) if allergies else "None known"
+            
             system_prompt = (
                 "You are a medical scanner identifying medication from images. "
                 "Determine the specific drug name, drug class/group, and a brief 1-sentence plain-language "
-                "description of what the medication is used to treat. "
-                "Return JSON strictly with keys 'drug_name', 'drug_group', and 'drug_description'."
+                "description of what the medication is used to treat.\n"
+                f"CRITICAL: The patient has the following known allergies: {allergies_str}. "
+                "Evaluate logically and medically if the scanned medication triggers any of these known allergies.\n"
+                "Return JSON strictly with EXACTLY four keys: 'drug_name', 'drug_group', 'drug_description', and 'allergy_conflict' (boolean)."
             )
 
             response = await client.chat.completions.create(
@@ -580,13 +585,9 @@ async def scan_medication(request: ScanRequest):
             scanned_drug = result.get("drug_name", "Unknown Medication")
             drug_group = result.get("drug_group", "Unknown Group")
             drug_description = result.get("drug_description", "")
-
-            # Dynamic heuristic allergy check
-            conflict = False
-            for allergy in allergies:
-                if allergy.lower() in drug_group.lower() or allergy.lower() in scanned_drug.lower():
-                    conflict = True
-                    break
+            
+            # Rely on LLM's direct medical evaluation of the conflict
+            conflict = result.get("allergy_conflict", False)
 
         except Exception as e:
             print(f"Vision API Error: {e}")
@@ -625,8 +626,7 @@ async def scan_medication(request: ScanRequest):
             "triggered": conflict,
             "severity": "CRITICAL" if conflict else "NONE",
             "message": (
-                "Critical Allergy Conflict Detected. "
-                "Immediate Action Protocol Initiated."
+                "CRITICAL ALLERGEN DETECTED. DO NOT CONSUME. AVOID AT ALL COSTS."
             ) if conflict else None,
         },
     })
@@ -669,7 +669,7 @@ async def refill_status():
 
 
 class RefillPharmacyRequest(BaseModel):
-    medication_names: list[str] | str | None = "all"  # list of names or "all" for all due
+    medication_names: Optional[Union[List[str], str]] = "all"  # list of names or "all" for all due
 
 
 @app.post("/api/refill/request-pharmacy")

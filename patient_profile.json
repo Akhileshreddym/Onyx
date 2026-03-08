@@ -62,6 +62,42 @@
   "emergency_log": [],
   "scan_history": [
     {
+      "id": "2b8efb1c-9b72-47cb-b881-3615717208e2",
+      "drug_name": "Claritin",
+      "drug_group": "Antihistamine",
+      "drug_description": "Claritin is used to relieve allergy symptoms such as runny nose, sneezing, and itchy eyes.",
+      "scanned_at": "2026-03-08T09:34:23.883095Z",
+      "bookmarked": false,
+      "allergy_conflict": false
+    },
+    {
+      "id": "5f4c912c-9cb4-4585-b9d4-cae0c234617c",
+      "drug_name": "Ibuprofen",
+      "drug_group": "NSAID (Non-Steroidal Anti-Inflammatory Drug)",
+      "drug_description": "Ibuprofen is used to relieve pain, reduce inflammation, and lower fever.",
+      "scanned_at": "2026-03-08T09:34:06.040967Z",
+      "bookmarked": false,
+      "allergy_conflict": true
+    },
+    {
+      "id": "0a984cd7-ab3a-4f08-ae0a-261c4792a2f8",
+      "drug_name": "Ibuprofen",
+      "drug_group": "NSAIDs",
+      "drug_description": "Ibuprofen is used to relieve pain, reduce inflammation, and lower fever.",
+      "scanned_at": "2026-03-08T09:29:04.486392Z",
+      "bookmarked": false,
+      "allergy_conflict": true
+    },
+    {
+      "id": "351b63e0-e8ab-4812-b6fb-6f56b6843039",
+      "drug_name": "Ibuprofen",
+      "drug_group": "NSAIDs (Nonsteroidal Anti-Inflammatory Drugs)",
+      "drug_description": "Ibuprofen is used to relieve pain, reduce inflammation, and lower fever.",
+      "scanned_at": "2026-03-08T09:26:47.668512Z",
+      "bookmarked": false,
+      "allergy_conflict": true
+    },
+    {
       "id": "7758b611-e8ba-4ff2-a81a-eb8368561339",
       "drug_name": "Unknown",
       "drug_group": "Unknown",
