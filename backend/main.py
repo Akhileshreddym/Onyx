@@ -69,7 +69,7 @@ class ChatRequest(BaseModel):
 async def chat_intent(request: ChatRequest):
     """
     Takes the simulated (or real) STT transcript, sends to OpenRouter,
-    and returns an English intent + Hindi intent mapping, plus an alert trigger.
+    and returns an English intent plus an alert trigger.
     """
     patient_data = load_patient_data()
     patient_name = patient_data.get("patient", {}).get("first_name", "Arthur")
@@ -77,9 +77,8 @@ async def chat_intent(request: ChatRequest):
     system_prompt = f"""
     You are Onyx, a luxury medical proxy assistant. The patient is {patient_name}.
     Analyze the following user speech transcript.
-    Return JSON with exactly three distinct keys:
+    Return JSON with exactly two distinct keys:
     {{"english_intent": "Brief, professional english summary of the request.",
-     "hindi_intent": "Hindi translation of the english intent.",
      "alert_triggered": true or false}}
      
     Set `alert_triggered` to true ONLY IF the transcript is asking to order/renew a prescription, request a refill, or is a medical emergency. Otherwise false.
@@ -89,7 +88,6 @@ async def chat_intent(request: ChatRequest):
         # Fallback if key missing
         return JSONResponse(content={
             "english_intent": f"Mock Intent for {patient_name}: Scheduled Blood Pressure Renewal.",
-            "hindi_intent": "मॉक इंटेंट: रक्तचाप नवीनीकरण का समय निर्धारित किया गया।",
             "alert_triggered": True
         })
 
@@ -116,7 +114,6 @@ async def chat_intent(request: ChatRequest):
         # Fallback gracefully during live demo if API fails
         return JSONResponse(content={
             "english_intent": "API Error: Defaulting to Prescription Renewal Protocol.",
-            "hindi_intent": "एपीआई त्रुटि: डिफ़ॉल्ट प्रोटोकॉल।",
             "alert_triggered": True
         })
 
@@ -135,11 +132,9 @@ async def generate_speech(request: TTSRequest):
     patient_data = load_patient_data()
     voice_pref = patient_data.get("patient", {}).get("preferences", {}).get("voice_id")
     
-    # Default to Bill (pqHfZKP75CvOlQylNhV4) if no preference exists, or Hindi Eric if requested
+    # Default to Bill (pqHfZKP75CvOlQylNhV4) if no preference exists
     voice_id = voice_pref if voice_pref else "pqHfZKP75CvOlQylNhV4"
-    if request.language == "hi":
-         voice_id = "cjVigY5qzO86HvfPbP6X" # Eric
-         
+    
     try:
         audio_generator = tts_client.text_to_speech.convert(
             text=request.text,
@@ -221,18 +216,9 @@ async def conversation_message(call_sid: str, user_speech: str, detected_lang: s
     
     state = conversation_states[call_sid]
     
-    # Language map for ElevenLabs v3 voice selection
-    voice_map = {
-        "en": "EXAVITQu4vr4xnSDxMaL",  # Bill (English)
-        "es": "OWAVDETSLAWbtqL3c5k5",  # Spanish
-        "fr": "EXAVITQu4vr4xnSDxMaL",  # French (use Bill for now)
-        "hi": "cjVigY5qzO86HvfPbP6X",  # Eric (Hindi)
-        "pt": "OWAVDETSLAWbtqL3c5k5",  # Portuguese
-        "de": "EXAVITQu4vr4xnSDxMaL",  # German (use Bill)
-        "zh": "EXAVITQu4vr4xnSDxMaL",  # Mandarin (use Bill)
-    }
-    
-    voice_id = voice_map.get(detected_lang, "EXAVITQu4vr4xnSDxMaL")
+    # ElevenLabs v3 handles all 70+ languages automatically - use one consistent voice
+    # No per-language voice switching needed; the model infers accent from the text
+    voice_id = voice_pref if voice_pref else "EXAVITQu4vr4xnSDxMaL"  # Bill
     
     print(f"\n🎤 CONVERSATION TURN")
     print(f"  Call SID: {call_sid}")
@@ -425,12 +411,11 @@ async def twilio_conversation(request: Request):
         
         state = conversation_states[call_sid]
         
-        # Detect language (simplified - ElevenLabs v3 supports: en, es, fr, hi, pt, de, zh, ru, ja, ko)
-        detected_lang = "en"  # Default English
+        # ElevenLabs v3 handles all 70+ languages natively from the text itself
+        # Just default to English for the AI response prompt
+        detected_lang = "en"
         if speech_result:
-            if any(word in speech_result.lower() for word in ["नमस्ते", "कृपया", "धन्यवाद", "मेरा", "रक्त"]):
-                detected_lang = "hi"
-            elif any(word in speech_result.lower() for word in ["por favor", "gracias", "necesito"]):
+            if any(word in speech_result.lower() for word in ["por favor", "gracias", "necesito"]):
                 detected_lang = "es"
             elif any(word in speech_result.lower() for word in ["s'il vous plaît", "merci", "j'ai besoin"]):
                 detected_lang = "fr"
@@ -466,14 +451,8 @@ Be helpful, professional, and focused on the medical request."""
         
         print(f"  ✓ Response: {ai_response}")
         
-        # Generate speech in detected language using v3
-        voice_map = {
-            "en": "EXAVITQu4vr4xnSDxMaL",  # Bill
-            "hi": "cjVigY5qzO86HvfPbP6X",  # Eric
-            "es": "OWAVDETSLAWbtqL3c5k5",  # Spanish voice
-            "fr": "EXAVITQu4vr4xnSDxMaL",  # Bill (French)
-        }
-        voice_id = voice_map.get(detected_lang, "EXAVITQu4vr4xnSDxMaL")
+        # ElevenLabs v3 handles all 70+ languages from the text — one voice works for all
+        voice_id = voice_pref if voice_pref else "EXAVITQu4vr4xnSDxMaL"  # Bill
         
         audio_generator = tts_client.text_to_speech.convert(
             text=ai_response,
@@ -511,7 +490,7 @@ Be helpful, professional, and focused on the medical request."""
             input="speech",
             timeout="3",
             speechTimeout="auto",
-            language=f"{detected_lang}-{'IN' if detected_lang == 'hi' else 'US' if detected_lang == 'en' else 'ES' if detected_lang == 'es' else detected_lang.upper()}",
+            language="en-US",
             action=f"{base_url}/api/twilio/conversation",
             method="POST"
         )
