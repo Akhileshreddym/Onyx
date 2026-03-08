@@ -547,8 +547,7 @@ async def caregiver_alert(request: PharmacyCallRequest, http_request: Request):
     intent = request.intent
     
     pharmacy_message = f"""Hello, this is Onyx Concierge calling on behalf of {patient_full_name}. 
-{patient_full_name} has requested the following: {user_request}. 
-Specifically: {intent}
+{intent}. 
 Please confirm you can process this request."""
     
     status = "FAILED"
