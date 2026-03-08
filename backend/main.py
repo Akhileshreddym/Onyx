@@ -1,5 +1,5 @@
 """
-Onyx Aura Concierge — FastAPI Backend
+Onyx Concierge — FastAPI Backend
 Serves static frontend + API stubs for the hackathon demo.
 """
 
@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse, Response
 
-app = FastAPI(title="Onyx Aura Concierge", version="1.0.0")
+app = FastAPI(title="Onyx Concierge", version="1.0.0")
 
 # CORS for local dev
 app.add_middleware(
