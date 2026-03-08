@@ -230,11 +230,12 @@
             style="color:var(--gold-classic);opacity:0.4">✦</span> Luxury</p>
       </div>
       <div class="flex items-center gap-1 text-[11px] ml-3" style="color:var(--text-muted)">
-        <span>Bonjour, <span class="text-white font-medium">Arthur P.</span></span>
+        <span>Bonjour, <span id="header-patient-name" class="text-white font-medium">Arthur P.</span></span>
         <span class="mx-1.5 opacity-25">|</span>
         <span>Status: <span class="text-white font-medium">Authenticated</span></span>
         <span class="mx-1.5 opacity-25">|</span>
-        <span>Secure Connection: <span class="text-white font-medium">Main Street Pharmacy.</span></span>
+        <span>Secure Connection: <span id="header-pharmacy" class="text-white font-medium">Main Street
+            Pharmacy.</span></span>
       </div>
     </div>
     <div class="flex items-center gap-4">
@@ -325,7 +326,8 @@
               <!-- Serif English text -->
               <p class="text-[15px] font-serif tracking-wide mt-2 leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]"
                 style="color:var(--text-muted)">
-                Requesting Arthur P.'s blood pressure prescription renewal.<br>Processing intent...
+                Requesting <span id="dialogue-patient-name">Arthur P.</span>'s blood pressure prescription
+                renewal.<br>Processing intent...
               </p>
             </div>
 
@@ -420,8 +422,10 @@
 
         <div class="text-[11.5px] mb-3 pb-3"
           style="color:var(--text-muted);border-bottom:1px solid rgba(255,255,255,0.06)">
-          <p>Member Since: 2015 <span class="opacity-25 mx-1">|</span> DOB: 01/15/1950</p>
-          <p class="mt-1">High-Priority Allergies: <span class="font-bold" style="color:var(--red-text)">Penicillin
+          <p>Member Since: <span id="dossier-member-year">2015</span> <span class="opacity-25 mx-1">|</span> DOB: <span
+              id="dossier-dob">01/15/1950</span></p>
+          <p class="mt-1">High-Priority Allergies: <span id="dossier-allergies" class="font-bold"
+              style="color:var(--red-text)">Penicillin
               (Severe)</span></p>
         </div>
 
@@ -431,13 +435,15 @@
             <div class="flex items-center gap-2">
               <span class="w-2 h-2 rounded-full shrink-0"
                 style="background:#22c55e;box-shadow:0 0 8px rgba(34,197,94,0.5)"></span>
-              <span class="text-[11px]" style="color:var(--text-muted)">Caregiver (Daughter) Connection: <span
-                  class="font-semibold" style="color:#22c55e">Active</span></span>
+              <span class="text-[11px]" style="color:var(--text-muted)">Caregiver (<span
+                  id="dossier-cg-rel">Daughter</span>) Connection: <span id="dossier-cg-status" class="font-semibold"
+                  style="color:#22c55e">Active</span></span>
             </div>
             <div class="flex items-center gap-2">
               <span class="w-2 h-2 rounded-full shrink-0"
                 style="background:var(--gold-classic);box-shadow:0 0 6px rgba(212,175,55,0.4)"></span>
-              <span class="text-[11px]" style="color:var(--text-muted)">Alerts Status: Immediate SMS enabled</span>
+              <span id="dossier-cg-alerts" class="text-[11px]" style="color:var(--text-muted)">Alerts Status: Immediate
+                SMS enabled</span>
             </div>
           </div>
         </div>
@@ -600,8 +606,49 @@
     // ═══════════════════════════════════════════════════════
     // GSAP Entrance + Infinite Mic Halo Pulse
     // ═══════════════════════════════════════════════════════
-    document.addEventListener('DOMContentLoaded', () => {
-      // Entrance cascade
+    document.addEventListener('DOMContentLoaded', async () => {
+      // 1. Fetch Dynamic Patient Profile Data
+      try {
+        const res = await fetch('/api/patient');
+        const data = await res.json();
+        const pt = data.patient || {};
+        const caregiver = data.caregiver || {};
+        const allergies = data.allergies || [];
+
+        // Format Name (e.g., Arthur P.)
+        const nameShort = pt.first_name ? `${pt.first_name} ${pt.last_name ? pt.last_name.charAt(0) + '.' : ''}` : 'Unknown Patient';
+
+        document.getElementById('header-patient-name').textContent = nameShort;
+        document.getElementById('dialogue-patient-name').textContent = nameShort;
+
+        if (pt.primary_physician) {
+          document.getElementById('header-pharmacy').textContent = pt.primary_physician;
+        }
+
+        document.getElementById('dossier-dob').textContent = pt.date_of_birth || "Unknown";
+
+        // Populate High Priority Allergy
+        if (allergies.length > 0) {
+          const highPri = allergies.find(a => a.priority === "HIGH") || allergies[0];
+          document.getElementById('dossier-allergies').textContent = `${highPri.substance} (${highPri.severity})`;
+        } else {
+          document.getElementById('dossier-allergies').textContent = "None Known";
+          document.getElementById('dossier-allergies').style.color = "var(--text-muted)";
+        }
+
+        // Populate Caregiver
+        document.getElementById('dossier-cg-rel').textContent = caregiver.relationship || "None";
+        document.getElementById('dossier-cg-status').textContent = caregiver.connection_status || "Inactive";
+        if (caregiver.connection_status !== "Active") {
+          document.getElementById('dossier-cg-status').style.color = "var(--text-muted)";
+        }
+        document.getElementById('dossier-cg-alerts').textContent = caregiver.sms_alerts_enabled ? "Alerts Status: Immediate SMS enabled" : "Alerts Status: Disabled";
+
+      } catch (e) {
+        console.error("Failed to load patient data:", e);
+      }
+
+      // 2. Entrance cascade
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
       tl.fromTo('#el-header', { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.9 })
         .fromTo('#el-sidebar', { opacity: 0, x: -12 }, { opacity: 1, x: 0, duration: 0.6 }, '-=0.5')

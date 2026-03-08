@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Initialize Onyx Concierge</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <style>
+        :root {
+            --bg-deep: #050705;
+            --gold-classic: #D4AF37;
+            --gold-light: #F3E5AB;
+            --gold-dark: #AA8B2D;
+            --text-muted: #9CA3AF;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .font-serif {
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        /* Glassmorphism Card */
+        .glass-card {
+            background: rgba(24, 24, 27, 0.4);
+            /* bg-zinc-900/40 */
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            /* border-[#D4AF37]/20 */
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Drag & Drop Zone */
+        .drop-zone {
+            border: 2px dashed rgba(212, 175, 55, 0.5);
+            /* border-dashed border-[#D4AF37]/50 */
+            transition: all 0.3s ease;
+        }
+
+        .drop-zone.active {
+            border-color: var(--gold-classic);
+            background: rgba(212, 175, 55, 0.05);
+            border-style: solid;
+        }
+
+        .drop-zone.has-file {
+            border-color: var(--gold-classic);
+            border-style: solid;
+        }
+
+        /* Action Button */
+        .btn-gold {
+            background: linear-gradient(90deg, var(--gold-classic) 0%, var(--gold-dark) 100%);
+            transition: all 0.3s ease;
+        }
+
+        .btn-gold:hover:not(:disabled) {
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn-gold:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            filter: grayscale(80%);
+        }
+
+        /* Custom Scrollbar for file list if needed */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(212, 175, 55, 0.3);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(212, 175, 55, 0.6);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="w-full flex justify-between items-center px-8 py-6 z-20" id="header-anim">
+        <h1 class="text-2xl font-serif tracking-tight">
+            <span style="color:var(--gold-classic)">Onyx</span> <span class="text-white fade-in">Concierge</span>
+        </h1>
+        <div class="flex items-center space-x-2 text-sm text-zinc-500 font-medium tracking-wide">
+            <!-- Lock Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+            <span>Secure Connection</span>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col items-center justify-center -mt-10 px-4 z-10">
+
+        <!-- Background decorative ambient glow -->
+        <div
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#D4AF37] opacity-[0.03] rounded-full blur-[100px] pointer-events-none">
+        </div>
+
+        <!-- Central Ingestion Card -->
+        <div class="glass-card w-full max-w-md rounded-2xl p-8 relative overflow-hidden" id="main-card">
+
+            <!-- Header Text -->
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-serif text-[#D4AF37] mb-2 tracking-wide font-medium">Initialize Your Profile
+                </h2>
+                <p class="text-gray-400 text-sm tracking-wide font-light">Upload Your Medical Report (PDF or Photo)</p>
+            </div>
+
+            <!-- Drag & Drop Zone -->
+            <div class="drop-zone rounded-xl p-8 flex flex-col items-center justify-center text-center cursor-pointer mb-6 group relative"
+                id="drop-zone">
+                <input type="file" id="file-input" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    accept=".pdf,.png,.jpg,.jpeg">
+
+                <!-- Icon container -->
+                <div class="mb-4 text-[#D4AF37] opacity-80 group-hover:opacity-100 transition-opacity transform group-hover:-translate-y-1 duration-300"
+                    id="upload-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-12 h-12">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m6.75 12-3-3m0 0-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                    </svg>
+                </div>
+
+                <h3 class="text-white text-lg font-medium mb-1" id="file-status">Drag & drop or Click to upload</h3>
+                <p class="text-xs text-gray-500" id="file-size-hint">Allowed: PDF, PNG, JPG (Max 10MB)</p>
+            </div>
+
+            <!-- Action Button -->
+            <button id="process-btn" disabled
+                class="btn-gold w-full text-black font-semibold tracking-wide py-3.5 rounded-lg shadow-lg flex items-center justify-center space-x-2">
+                <span id="btn-text">Process Report & Initialize Profile</span>
+                <svg id="btn-spinner" class="animate-spin -ml-1 mr-3 h-5 w-5 text-black hidden"
+                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                    </path>
+                </svg>
+            </button>
+
+        </div>
+
+        <!-- Trust Footer -->
+        <div class="mt-8 text-center text-[10px] text-zinc-600 tracking-widest uppercase" id="footer-anim">
+            Privacy & Security &nbsp;|&nbsp; Data Encrypted &nbsp;|&nbsp; Strict PHI Protocols
+        </div>
+
+    </main>
+
+    <script>
+        // DOM Elements
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const fileStatus = document.getElementById('file-status');
+        const fileSizeHint = document.getElementById('file-size-hint');
+        const processBtn = document.getElementById('process-btn');
+        const btnText = document.getElementById('btn-text');
+        const btnSpinner = document.getElementById('btn-spinner');
+        const uploadIcon = document.getElementById('upload-icon');
+
+        let selectedFile = null;
+
+        // --- GSAP Entrance Animations ---
+        gsap.fromTo("#header-anim",
+            { y: -20, opacity: 0 },
+            { y: 0, opacity: 1, duration: 1, ease: "power3.out", delay: 0.1 }
+        );
+
+        gsap.fromTo("#main-card",
+            { y: 30, opacity: 0, scale: 0.98 },
+            { y: 0, opacity: 1, scale: 1, duration: 1.2, ease: "expo.out", delay: 0.3 }
+        );
+
+        gsap.fromTo("#footer-anim",
+            { y: 10, opacity: 0 },
+            { y: 0, opacity: 1, duration: 1, ease: "power2.out", delay: 0.8 }
+        );
+
+        // --- Drag & Drop Logic ---
+
+        // Prevent default browser behavior
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        // Highlight effect
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.add('active'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.remove('active'), false);
+        });
+
+        // Handle drop
+        dropZone.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files && files.length > 0) {
+                handleFiles(files[0]);
+            }
+        }
+
+        // Handle Browse Click
+        fileInput.addEventListener('change', function () {
+            if (this.files && this.files.length > 0) {
+                handleFiles(this.files[0]);
+            }
+        });
+
+        function handleFiles(file) {
+            // Check size (10MB max)
+            if (file.size > 10 * 1024 * 1024) {
+                alert("File is too large. Maximum size is 10MB.");
+                return;
+            }
+
+            selectedFile = file;
+
+            // Update UI State
+            dropZone.classList.add('has-file');
+            fileStatus.textContent = file.name;
+            fileStatus.classList.add('text-[#D4AF37]');
+            fileStatus.classList.remove('text-white');
+
+            // Friendly file size format
+            const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+            fileSizeHint.textContent = `${sizeMB} MB ready for extraction`;
+
+            // Swap icon to a document success icon
+            uploadIcon.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 text-[#D4AF37]">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                </svg>
+            `;
+
+            gsap.fromTo(uploadIcon, { scale: 0.8, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.7)" });
+
+            // Enable submit button
+            processBtn.disabled = false;
+        }
+
+        // --- Submit Logic (Mock API) ---
+        processBtn.addEventListener('click', async () => {
+            if (!selectedFile) return;
+
+            // 1. Loading UI State
+            btnText.textContent = "Extracting Data via Gemini...";
+            btnSpinner.classList.remove('hidden');
+            processBtn.classList.add('opacity-90');
+            processBtn.style.pointerEvents = 'none';
+            dropZone.style.pointerEvents = 'none';
+
+            // Pulse animation on the card
+            gsap.to(".glass-card", {
+                boxShadow: "0 0 40px rgba(212, 175, 55, 0.2)",
+                borderColor: "rgba(212, 175, 55, 0.4)",
+                yoyo: true,
+                repeat: -1,
+                duration: 1
+            });
+
+            // 2. Real API Call to Gemini
+            const formData = new FormData();
+            formData.append("file", selectedFile);
+
+            try {
+                const res = await fetch('/api/process_report', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await res.json();
+
+                if (res.ok && data.status === "success") {
+                    // Success State Before Redirect
+                    btnSpinner.classList.add('hidden');
+                    btnText.textContent = "Profile Initialized. Redirecting...";
+
+                    gsap.to(processBtn, {
+                        backgroundColor: "#10B981", // Green success
+                        background: "none",
+                        duration: 0.3
+                    });
+
+                    // Redirect to main dashboard
+                    setTimeout(() => {
+                        window.location.href = "/";
+                    }, 800);
+                } else {
+                    throw new Error(data.error || "Failed to process report");
+                }
+            } catch (e) {
+                console.error("Extraction failed", e);
+                btnSpinner.classList.add('hidden');
+                btnText.textContent = "Extraction Failed. Try Again.";
+                processBtn.classList.remove('opacity-90');
+                processBtn.style.pointerEvents = 'auto';
+                dropZone.style.pointerEvents = 'auto';
+                gsap.killTweensOf(".glass-card");
+                gsap.to(".glass-card", {
+                    boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.7)",
+                    borderColor: "rgba(220, 38, 38, 0.4)", // Red error border
+                    duration: 0.3
+                });
+            }
+        });
+
+    </script>
+</body>
+
+</html>

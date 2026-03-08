@@ -61,6 +61,106 @@ async def get_patient():
     """Return full patient dossier."""
     return JSONResponse(content=load_patient_data())
 
+@app.get("/onboarding")
+async def serve_onboarding():
+    return FileResponse(FRONTEND_DIR / "onboarding.html")
+
+from fastapi import FastAPI, Request, UploadFile, File, Form
+import json
+import os
+import base64
+import fitz  # PyMuPDF
+from PIL import Image
+import io
+
+@app.post("/api/process_report")
+async def process_report(file: UploadFile = File(...)):
+    """Process an uploaded PDF or Image via Gemini 1.5 Pro to extract patient profile data."""
+    print(f"File received: {file.filename}")
+    
+    content_type = file.content_type
+    file_bytes = await file.read()
+    
+    messages = [
+        {
+            "role": "system",
+            "content": "You are Onyx, an advanced medical AI assistant. Analyze the provided medical or demographic document and extract the patient's full details into a precise JSON structure. Match the required JSON schema EXACTLY. Output ONLY raw JSON, with no markdown code blocks, no backticks, and no explanations."
+        }
+    ]
+    
+    # Process based on file type
+    if content_type == "application/pdf":
+        text_content = ""
+        try:
+            # Wrap bytes in a BytesIO object for PyMuPDF
+            pdf_stream = io.BytesIO(file_bytes)
+            doc = fitz.open(stream=pdf_stream, filetype="pdf")
+            for page in doc:
+                text_content += page.get_text() + "\n"
+        except Exception as e:
+            print(f"PDF Parse Error: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            return JSONResponse(status_code=500, content={"error": f"Failed to parse PDF document: {str(e)}"})
+            
+        messages.append({
+            "role": "user",
+            "content": f"Extract patient profile from this text:\n\n{text_content}\n\nSchema Requirements:\n{{\"patient\":{{\"id\":\"...\",\"first_name\":\"...\",\"last_name\":\"...\",\"date_of_birth\":\"MM/DD/YYYY\",\"age\":0,\"gender\":\"...\",\"location\":{{\"city\":\"...\",\"state\":\"...\",\"zip\":\"...\"}},\"primary_physician\":\"...\",\"insurance\":\"...\"}},\"allergies\":[{{\"substance\":\"...\",\"severity\":\"...\",\"reaction\":\"...\",\"priority\":\"HIGH/LOW\",\"verified\":true}}],\"current_medications\":[{{\"name\":\"...\",\"dosage\":\"...\",\"frequency\":\"...\",\"purpose\":\"...\"}}],\"caregiver\":{{\"relationship\":\"...\",\"name\":\"...\",\"phone\":\"...\",\"connection_status\":\"Active\",\"sms_alerts_enabled\":true,\"notification_provider\":\"Twilio\"}},\"emergency_log\":[]}}"
+        })
+    elif content_type.startswith("image/"):
+        base64_img = base64.b64encode(file_bytes).decode('utf-8')
+        messages.append({
+            "role": "user",
+            "content": [
+                {
+                    "type": "text",
+                    "text": f"Extract patient profile from this image. Schema Requirements:\n{{\"patient\":{{\"id\":\"...\",\"first_name\":\"...\",\"last_name\":\"...\",\"date_of_birth\":\"MM/DD/YYYY\",\"age\":0,\"gender\":\"...\",\"location\":{{\"city\":\"...\",\"state\":\"...\",\"zip\":\"...\"}},\"primary_physician\":\"...\",\"insurance\":\"...\"}},\"allergies\":[{{\"substance\":\"...\",\"severity\":\"...\",\"reaction\":\"...\",\"priority\":\"HIGH/LOW\",\"verified\":true}}],\"current_medications\":[{{\"name\":\"...\",\"dosage\":\"...\",\"frequency\":\"...\",\"purpose\":\"...\"}}],\"caregiver\":{{\"relationship\":\"...\",\"name\":\"...\",\"phone\":\"...\",\"connection_status\":\"Active\",\"sms_alerts_enabled\":true,\"notification_provider\":\"Twilio\"}},\"emergency_log\":[]}}"
+                },
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": f"data:{content_type};base64,{base64_img}"
+                    }
+                }
+            ]
+        })
+    else:
+        return JSONResponse(status_code=400, content={"error": "Unsupported file type. Please upload a PDF or Image."})
+        
+    try:
+        response = await client.chat.completions.create(
+            model="google/gemini-3.1-pro-preview",
+            messages=messages,
+            response_format={"type": "json_object"}
+        )
+        
+        raw_output = response.choices[0].message.content
+        print(f"Gemini Raw Output: {raw_output}")
+        
+        # Clean up any potential markdown formatting from the response
+        cleaned_output = raw_output.strip()
+        if cleaned_output.startswith("```json"):
+            cleaned_output = cleaned_output[7:]
+        if cleaned_output.startswith("```"):
+            cleaned_output = cleaned_output[3:]
+        if cleaned_output.endswith("```"):
+            cleaned_output = cleaned_output[:-3]
+        cleaned_output = cleaned_output.strip()
+            
+        profile_data = json.loads(cleaned_output)
+        
+        # Save to patient_profile.json
+        with open(PATIENT_FILE, "w") as f:
+            json.dump(profile_data, f, indent=2)
+            
+        return JSONResponse(content={"status": "success", "profile": profile_data})
+        
+    except Exception as e:
+        print(f"Gemini extraction failed: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return JSONResponse(status_code=500, content={"error": f"Failed to extract profile: {str(e)}"})
+
 
 class ChatRequest(BaseModel):
     transcript: str
@@ -546,9 +646,26 @@ async def caregiver_alert(request: PharmacyCallRequest, http_request: Request):
     user_request = request.user_request
     intent = request.intent
     
-    pharmacy_message = f"""Hello, this is Onyx Concierge calling on behalf of {patient_full_name}. 
-{intent}. 
-Please confirm you can process this request."""
+    patient_id = patient_data.get("patient", {}).get("id", "Unknown ID")
+    patient_dob = patient_data.get("patient", {}).get("date_of_birth", "Unknown DOB")
+    
+    # Format the medications list string for audio TTS
+    medications_list = ""
+    current_meds = patient_data.get("current_medications", [])
+    if current_meds:
+        medications_list = ", ".join([f"{med.get('name', 'Unknown')} at {med.get('dosage', 'Unknown dosage')}" for med in current_meds])
+    else:
+        medications_list = "no currently listed medications"
+        
+    pharmacy_message = f"""Hello, this is Onyx Concierge, an automated medical proxy calling on behalf of {patient_full_name}. 
+Patient Medical Record Number: {patient_id}. 
+Date of Birth: {patient_dob}. 
+
+The patient is requesting the following action: {intent}. 
+
+For reference, their current active prescriptions include: {medications_list}. 
+
+Please press 1 or say 'yes' to confirm you can process this request."""
     
     status = "FAILED"
     provider = "Twilio Pharmacy Call (ElevenLabs v3)"

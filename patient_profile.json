@@ -1,62 +1,62 @@
 {
   "patient": {
-    "id": "ONX-2024-00742",
-    "first_name": "Arthur",
-    "last_name": "Pendelton",
-    "date_of_birth": "01/15/1950",
-    "age": 76,
-    "gender": "Male",
+    "id": "#91024-MGR",
+    "first_name": "Maria G.",
+    "last_name": "Ramirez",
+    "date_of_birth": "08/22/1961",
+    "age": 64,
+    "gender": "Female",
     "location": {
-      "city": "Jacksonville",
+      "city": "Orlando",
       "state": "FL",
-      "zip": "32224"
+      "zip": "32801"
     },
-    "primary_physician": "Dr. Eleanor Voss",
-    "insurance": "Medicare Advantage — Plan Gold"
+    "primary_physician": "Dr. Elena Rostova, MD",
+    "insurance": "UnitedHealthcare / AARP Medicare Advantage"
   },
   "allergies": [
     {
-      "substance": "Penicillin",
+      "substance": "NSAIDs (Ibuprofen / Naproxen)",
       "severity": "Severe",
-      "reaction": "Anaphylaxis",
+      "reaction": "Gastrointestinal Bleeding / Severe Urticaria",
+      "priority": "HIGH",
+      "verified": true
+    },
+    {
+      "substance": "LATEX",
+      "severity": "Moderate",
+      "reaction": "Contact Dermatitis",
       "priority": "HIGH",
       "verified": true
     }
   ],
   "current_medications": [
     {
-      "name": "Lisinopril",
-      "dosage": "10mg",
-      "frequency": "Once daily",
-      "purpose": "Blood Pressure"
-    },
-    {
       "name": "Metformin",
       "dosage": "500mg",
-      "frequency": "Twice daily",
-      "purpose": "Type 2 Diabetes"
+      "frequency": "twice daily with meals",
+      "purpose": "Blood Sugar Control"
     },
     {
-      "name": "Atorvastatin",
-      "dosage": "20mg",
-      "frequency": "Once daily",
-      "purpose": "Cholesterol"
+      "name": "Levothyroxine",
+      "dosage": "50mcg",
+      "frequency": "daily 30 minutes before breakfast",
+      "purpose": "Thyroid Hormone Replacement"
+    },
+    {
+      "name": "Naproxen",
+      "dosage": "250mg",
+      "frequency": "twice daily as needed",
+      "purpose": "joint pain"
     }
   ],
   "caregiver": {
-    "relationship": "Daughter",
-    "name": "Margaret Pendelton-Hayes",
-    "phone": "+1-904-555-0173",
+    "relationship": "Son",
+    "name": "Carlos Ramirez",
+    "phone": "",
     "connection_status": "Active",
     "sms_alerts_enabled": true,
     "notification_provider": "Twilio"
   },
-  "emergency_log": [
-    {
-      "timestamp": "2026-03-07T10:42:00Z",
-      "type": "ALLERGY_CONFLICT",
-      "message": "Emergency SMS sent to Daughter: Pharmacy out of stock / Allergy detected",
-      "status": "DELIVERED"
-    }
-  ]
+  "emergency_log": []
 }
