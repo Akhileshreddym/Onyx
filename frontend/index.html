@@ -188,10 +188,23 @@
     }
 
     /* ─── SCROLLBAR ─── */
-    ::-webkit-scrollbar { width: 4px; height: 4px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(212,175,55,0.2); border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(212,175,55,0.4); }
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(212, 175, 55, 0.2);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(212, 175, 55, 0.4);
+    }
   </style>
 </head>
 
@@ -304,10 +317,10 @@
           <div class="px-8 pb-6 pointer-events-auto">
             <!-- Transcript scroll container -->
             <div style="max-height:120px;overflow-y:auto;padding-right:4px;">
-              <!-- Serif Hindi text -->
+              <!-- Onyx Response Text -->
               <p
                 class="text-[19px] text-white font-serif font-medium tracking-wide leading-relaxed drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">
-                नमस्ते, कृपया मेरा रक्तचाप का नुस्खा फिर से मंगवाएं।
+                Welcome. Tap the microphone and tell me how I can help.
               </p>
               <!-- Serif English text -->
               <p class="text-[15px] font-serif tracking-wide mt-2 leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]"
@@ -325,7 +338,8 @@
 
             <!-- SPEAK TO ONYX — large mic -->
             <div id="el-mic" class="flex items-center justify-center gap-4 mt-7" style="opacity:0">
-              <span id="mic-label" class="text-[11px] font-bold tracking-[0.25em] uppercase" style="color:var(--text-muted)">Speak to
+              <span id="mic-label" class="text-[11px] font-bold tracking-[0.25em] uppercase"
+                style="color:var(--text-muted)">Speak to
                 Onyx</span>
               <div class="relative w-[72px] h-[72px]" id="micWrap">
                 <div class="mic-halo-ring" id="haloA"></div>
@@ -371,15 +385,18 @@
         </div>
 
         <div id="scan-results-wrap" style="min-height:130px;display:flex;flex-direction:column;gap:10px;">
-          <p class="text-[12px] text-white font-medium" style="opacity:0;pointer-events:none;transition:opacity 0.4s ease;">
+          <p class="text-[12px] text-white font-medium"
+            style="opacity:0;pointer-events:none;transition:opacity 0.4s ease;">
             Scan Verified: <span class="font-normal" style="color:var(--text-muted)">Amoxicillin 500mg. (Penicillin
               Group)</span>
           </p>
 
-          <p id="drug-description-text" class="text-[11.5px] leading-snug" style="color:var(--text-muted);opacity:0;pointer-events:none;transition:opacity 0.4s ease 0.1s;"></p>
+          <p id="drug-description-text" class="text-[11.5px] leading-snug"
+            style="color:var(--text-muted);opacity:0;pointer-events:none;transition:opacity 0.4s ease 0.1s;"></p>
 
           <div class="alert-critical rounded-lg p-3.5" style="opacity:0;pointer-events:none;transform:translateY(8px);">
-            <p class="text-[10px] font-bold uppercase tracking-widest mb-1" style="color:var(--red-text)">Alert Status</p>
+            <p class="text-[10px] font-bold uppercase tracking-widest mb-1" style="color:var(--red-text)">Alert Status
+            </p>
             <p class="text-[12px] leading-snug text-red-300/90">
               Critical Allergy Conflict Detected. <em class="font-semibold" style="color:#F59E0B">Immediate Action
                 Protocol Initiated.</em>
@@ -586,12 +603,12 @@
     document.addEventListener('DOMContentLoaded', () => {
       // Entrance cascade
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-      tl.fromTo('#el-header',   { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.9 })
-        .fromTo('#el-sidebar',  { opacity: 0, x: -12 }, { opacity: 1, x: 0, duration: 0.6 }, '-=0.5')
-        .fromTo('#el-dialogue', { opacity: 0, y: 16  }, { opacity: 1, y: 0, duration: 0.8 }, '-=0.4')
-        .fromTo('#el-artifact', { opacity: 0, x: 16  }, { opacity: 1, x: 0, duration: 0.6 }, '-=0.3')
-        .fromTo('#el-dossier',  { opacity: 0, y: 16  }, { opacity: 1, y: 0, duration: 0.6 }, '-=0.3')
-        .fromTo('#el-mic',      { opacity: 0, scale: 0.85 }, { opacity: 1, scale: 1, duration: 0.8, ease: 'back.out(1.5)' }, '-=0.1')
+      tl.fromTo('#el-header', { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.9 })
+        .fromTo('#el-sidebar', { opacity: 0, x: -12 }, { opacity: 1, x: 0, duration: 0.6 }, '-=0.5')
+        .fromTo('#el-dialogue', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.8 }, '-=0.4')
+        .fromTo('#el-artifact', { opacity: 0, x: 16 }, { opacity: 1, x: 0, duration: 0.6 }, '-=0.3')
+        .fromTo('#el-dossier', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.6 }, '-=0.3')
+        .fromTo('#el-mic', { opacity: 0, scale: 0.85 }, { opacity: 1, scale: 1, duration: 0.8, ease: 'back.out(1.5)' }, '-=0.1')
         .add(() => startHaloPulse());
 
       // Infinite mic halo pulse via GSAP
@@ -628,7 +645,7 @@
       const scanResultText = document.querySelector('#el-artifact p.text-white');
       const drugDescriptionText = document.getElementById('drug-description-text');
       const englishTranscript = document.querySelector('#el-dialogue p.text-\\[15px\\]');
-      const hindiTranscript = document.querySelector('#el-dialogue p.text-\\[19px\\]');
+      const responseTranscript = document.querySelector('#el-dialogue p.text-\\[19px\\]');
 
       // Webcam Drop-in
       const video = document.getElementById('webcam-viewer');
@@ -760,7 +777,7 @@
           if (recognition) recognition.start();
 
           englishTranscript.innerHTML = "<em style='color:#ef4444'>Listening live... (Speak now, click mic to stop)</em>";
-          hindiTranscript.innerHTML = "<em style='color:#ef4444'>सुन रहा हूँ...</em>";
+          responseTranscript.innerHTML = "<em style='color:#ef4444'>Listening…</em>";
 
           micPulseAnimation = gsap.to('.mic-btn-gold', { scale: 1.15, duration: 0.3, yoyo: true, repeat: -1 });
 
@@ -780,7 +797,7 @@
           }
 
           englishTranscript.innerHTML = "Processing intent...";
-          hindiTranscript.textContent = "प्रसंस्करण...";
+          responseTranscript.textContent = "Processing…";
 
           try {
             // 1. Send the real captured transcript to OpenRouter 
@@ -797,20 +814,26 @@
 
             // 2. Update UI
             englishTranscript.innerHTML = `Request: ${transcriptPayload}<br><span style="color:var(--gold-light)">Intent:</span> ${data.english_intent}`;
-            hindiTranscript.textContent = data.hindi_intent;
+            responseTranscript.textContent = data.response_text || data.english_intent;
 
-            // 3. Play audio from ElevenLabs target lang (Hindi)
-            const ttsRes = await fetch('/api/tts', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ text: data.hindi_intent, language: "hi" })
-            });
+            // 3. Play Onyx's spoken reply via ElevenLabs
+            try {
+              const ttsRes = await fetch('/api/tts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: data.response_text || data.english_intent, language: "en" })
+              });
 
-            if (ttsRes.ok) {
-              const blob = await ttsRes.blob();
-              const audioUrl = URL.createObjectURL(blob);
-              const audio = new Audio(audioUrl);
-              audio.play();
+              if (ttsRes.ok) {
+                const blob = await ttsRes.blob();
+                const audioUrl = URL.createObjectURL(blob);
+                const audio = new Audio(audioUrl);
+                await audio.play().catch(err => console.warn("Audio autoplay blocked:", err));
+              } else {
+                console.error("TTS failed:", ttsRes.status, await ttsRes.text());
+              }
+            } catch (ttsErr) {
+              console.error("TTS request error:", ttsErr);
             }
 
             // 4. Trigger Pharmacy Call if OpenRouter detected an emergency/prescription need
@@ -821,10 +844,10 @@
               alertBox.style.pointerEvents = 'auto';
               gsap.fromTo(alertBox, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5 });
               // Pass the original transcript to the pharmacy call
-              await fetch('/api/caregiver/alert', { 
+              await fetch('/api/caregiver/alert', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
+                body: JSON.stringify({
                   user_request: transcriptPayload,
                   patient_name: "Arthur",
                   intent: data.english_intent

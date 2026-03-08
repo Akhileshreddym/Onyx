@@ -77,17 +77,23 @@ async def chat_intent(request: ChatRequest):
     system_prompt = f"""
     You are Onyx, a luxury medical proxy assistant. The patient is {patient_name}.
     Analyze the following user speech transcript.
-    Return JSON with exactly two distinct keys:
-    {{"english_intent": "Brief, professional english summary of the request.",
+    Return JSON with exactly three keys:
+    {{"english_intent": "Brief, professional summary of the request.",
+     "response_text": "A natural, conversational spoken reply to the user. If no action is needed, provide a helpful answer. If a pharmacy call is needed, confirm you are placing the call.",
      "alert_triggered": true or false}}
      
     Set `alert_triggered` to true ONLY IF the transcript is asking to order/renew a prescription, request a refill, or is a medical emergency. Otherwise false.
+    
+    Examples:
+    - User: "How often can I take Tylenol?" -> alert_triggered: false, response_text: "You can take Tylenol every 4 to 6 hours as needed, but don't exceed 3,000 milligrams in 24 hours. Please consult your doctor if you need it frequently."
+    - User: "Please order my blood pressure medication" -> alert_triggered: true, response_text: "Of course, {patient_name}. I'm placing a call to your pharmacy right now to order your blood pressure medication."
     """
     
     if not OPENROUTER_API_KEY:
         # Fallback if key missing
         return JSONResponse(content={
             "english_intent": f"Mock Intent for {patient_name}: Scheduled Blood Pressure Renewal.",
+            "response_text": f"I'm placing a call to your pharmacy now to order your prescription, {patient_name}.",
             "alert_triggered": True
         })
 
@@ -107,6 +113,11 @@ async def chat_intent(request: ChatRequest):
             content = content.replace("```json", "").replace("```", "").strip()
             
         result = json.loads(content)
+        
+        # Ensure response_text exists (fallback if model omits it)
+        if "response_text" not in result:
+            result["response_text"] = result.get("english_intent", "I'm here to help.")
+        
         return JSONResponse(content=result)
         
     except Exception as e:
@@ -114,6 +125,7 @@ async def chat_intent(request: ChatRequest):
         # Fallback gracefully during live demo if API fails
         return JSONResponse(content={
             "english_intent": "API Error: Defaulting to Prescription Renewal Protocol.",
+            "response_text": f"I'm sorry, I encountered an error. Let me try to help you, {patient_name}.",
             "alert_triggered": True
         })
 
