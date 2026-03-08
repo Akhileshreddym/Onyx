@@ -603,7 +603,8 @@ Please confirm you can process this request."""
             # Use the request base url since that is what the frontend is using
             base_url = str(http_request.base_url).rstrip("/")
             
-            # Use public URL for webhooks so Twilio can reach back to us
+            # Force-reload .env so we always get the latest tunnel URL (it may have changed after boot)
+            load_dotenv(override=True)
             base_url_env = os.getenv("BASE_URL")
             public_webhook_url = base_url_env.rstrip("/") if base_url_env else base_url
             
