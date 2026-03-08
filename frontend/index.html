@@ -813,14 +813,23 @@
               audio.play();
             }
 
-            // 4. Trigger Twilio Alert if OpenRouter detected an emergency/prescription need
+            // 4. Trigger Pharmacy Call if OpenRouter detected an emergency/prescription need
             if (data.alert_triggered) {
-              scanResultText.innerHTML = `Voice Monitor: <span class="font-normal" style="color:#ef4444">Prescription Order Detected</span>`;
+              scanResultText.innerHTML = `Voice Monitor: <span class="font-normal" style="color:#ef4444">Prescription Order Detected - Calling Pharmacy</span>`;
               scanResultText.style.pointerEvents = 'auto';
               gsap.to(scanResultText, { opacity: 1, duration: 0.4 });
               alertBox.style.pointerEvents = 'auto';
               gsap.fromTo(alertBox, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5 });
-              await fetch('/api/caregiver/alert', { method: 'POST' });
+              // Pass the original transcript to the pharmacy call
+              await fetch('/api/caregiver/alert', { 
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                  user_request: transcriptPayload,
+                  patient_name: "Arthur",
+                  intent: data.english_intent
+                })
+              });
             }
 
           } catch (e) {
