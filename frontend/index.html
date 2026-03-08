@@ -639,10 +639,14 @@
           if (this.x < -30) this.x = W + 30;
           if (this.x > W + 30) this.x = -30;
 
-          // Multi-frequency wave motion
-          const w1 = Math.sin(t * 0.006 + this.phaseY) * this.ampY;
-          const w2 = Math.sin(t * 0.004 + this.phaseX * 2) * this.ampY * 0.4;
-          const w3 = Math.cos(t * 0.009 + this.phaseY * 0.5) * this.ampY * 0.15;
+          // Multi-frequency wave motion reacting to live voice volume
+          // Normal state is 1x. Shouting into mic pushes scale to ~6x amplitude
+          const currentScale = 1 + (window.voiceVolume || 0) * 6.0;
+          const activeAmpY = this.ampY * currentScale;
+
+          const w1 = Math.sin(t * 0.006 + this.phaseY) * activeAmpY;
+          const w2 = Math.sin(t * 0.004 + this.phaseX * 2) * activeAmpY * 0.4;
+          const w3 = Math.cos(t * 0.009 + this.phaseY * 0.5) * activeAmpY * 0.15;
           this.y = this.baseY + w1 + w2 + w3;
         }
       }
@@ -1303,9 +1307,40 @@
         closePanel();
       });
 
-      // Voice simulation logic - Toggle ON/OFF
       let isMicrophoneActive = false;
+      let isOnyxSpeaking = false;
       let micPulseAnimation = null;
+      let audioContext = null;
+      let analyser = null;
+      let microphone = null;
+      let onyxAudioSource = null;
+      let dataArray = null;
+      let volumeFrameId = null;
+
+      // Ensure AudioContext is initialized for both Mic and Speaker
+      function initAudioContext() {
+        if (!audioContext) {
+          audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          analyser = audioContext.createAnalyser();
+          analyser.fftSize = 256;
+          dataArray = new Uint8Array(analyser.frequencyBinCount);
+        }
+        if (audioContext.state === 'suspended') audioContext.resume();
+      }
+
+      // Web Audio API helper to continuously sample underlying stream volume
+      function updateVolume() {
+        if (!analyser || (!isMicrophoneActive && !isOnyxSpeaking)) {
+          window.voiceVolume = 0;
+          return;
+        }
+        analyser.getByteFrequencyData(dataArray);
+        let sum = 0;
+        for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
+        let average = sum / dataArray.length;
+        window.voiceVolume = average / 255.0; // Normalize 0 to 1
+        volumeFrameId = requestAnimationFrame(updateVolume);
+      }
 
       // Initialize Web Speech API
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -1348,6 +1383,16 @@
           finalTranscript = ""; // Reset transcript
           if (recognition) recognition.start();
 
+          // Initialize Web Audio API for visualizer
+          initAudioContext();
+          if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+              microphone = audioContext.createMediaStreamSource(stream);
+              microphone.connect(analyser); // We don't connect to destination to avoid feedback loop
+              updateVolume();
+            }).catch(err => console.warn("Microphone access denied for visualizer", err));
+          }
+
           englishTranscript.innerHTML = "<em style='color:#ef4444'>Listening live... (Speak now, click mic to stop)</em>";
           responseTranscript.innerHTML = "<em style='color:#ef4444'>Listening…</em>";
 
@@ -1362,6 +1407,8 @@
           micLabel.style.color = 'var(--text-muted)';
 
           if (recognition) recognition.stop();
+          if (volumeFrameId) cancelAnimationFrame(volumeFrameId);
+          window.voiceVolume = 0; // Reset animation smoothly
 
           if (micPulseAnimation) {
             micPulseAnimation.kill();
@@ -1390,6 +1437,7 @@
 
             // 3. Play Onyx's spoken reply via ElevenLabs
             try {
+              initAudioContext();
               const ttsRes = await fetch('/api/tts', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -1400,6 +1448,24 @@
                 const blob = await ttsRes.blob();
                 const audioUrl = URL.createObjectURL(blob);
                 const audio = new Audio(audioUrl);
+                audio.crossOrigin = "anonymous";
+
+                // Route ElevenLabs audio output through the visualizer Analyser Node
+                onyxAudioSource = audioContext.createMediaElementSource(audio);
+                onyxAudioSource.connect(analyser);
+
+                // Connect the AI voice *directly* to speakers, NOT the analyzer.
+                // Connecting the analyzer to speakers causes the microphone to echo!
+                onyxAudioSource.connect(audioContext.destination);
+
+                audio.onended = () => {
+                  isOnyxSpeaking = false;
+                  if (volumeFrameId) cancelAnimationFrame(volumeFrameId);
+                  window.voiceVolume = 0;
+                };
+
+                isOnyxSpeaking = true;
+                updateVolume(); // Start visualizer loop for AI Voice
                 await audio.play().catch(err => console.warn("Audio autoplay blocked:", err));
               } else {
                 console.error("TTS failed:", ttsRes.status, await ttsRes.text());

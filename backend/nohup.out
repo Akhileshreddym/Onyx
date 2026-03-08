@@ -1,14 +1,14 @@
 INFO:     Will watch for changes in these directories: ['/Users/akhilesh/Onyx/backend']
 INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
-INFO:     Started reloader process [6221] using WatchFiles
-INFO:     Started server process [6256]
+INFO:     Started reloader process [6891] using WatchFiles
+INFO:     Started server process [6926]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
-INFO:     127.0.0.1:49922 - "GET / HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:49922 - "GET /api/patient HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49922 - "GET /api/refill/status HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49924 - "GET /api/notifications HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49926 - "GET /api/scan/history HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50735 - "GET / HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:50735 - "GET /api/patient HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50735 - "GET /api/refill/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50737 - "GET /api/notifications HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50740 - "GET /api/scan/history HTTP/1.1" 200 OK
 /Users/akhilesh/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
   warnings.warn(
 
@@ -19,19 +19,19 @@ INFO:     127.0.0.1:49926 - "GET /api/scan/history HTTP/1.1" 200 OK
   Calling Pharmacy: +19049103559
   From: +18638801249
   ✓ Synthesizing message for pharmacy...
-  ✓ TTS complete. Audio size: 662927 bytes
+  ✓ TTS complete. Audio size: 627400 bytes
   ⬆️ Uploading pharmacy_0.mp3 to CDN...
-  ✓ Uploaded to CDN: https://n.uguu.se/QGpUSxFu.mp3
-  ✓ Audio URL ready: https://n.uguu.se/QGpUSxFu.mp3
+  ✓ Uploaded to CDN: https://o.uguu.se/mZtdodrm.mp3
+  ✓ Audio URL ready: https://o.uguu.se/mZtdodrm.mp3
   ✓ Pharmacy call TwiML prepared
   ⏳ 🤙 Initiating call to pharmacy...
-  ✓ ✅ Pharmacy call queued! Status: queued. Call SID: CA23ef9a0eaf07324f0e477c357b8990f9
-INFO:     127.0.0.1:49926 - "POST /api/refill/request-pharmacy HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49926 - "GET /api/notifications HTTP/1.1" 200 OK
+  ✓ ✅ Pharmacy call queued! Status: queued. Call SID: CAe8dfe2ee3ebf4276f3cde18c4a8a6412
+INFO:     127.0.0.1:50740 - "POST /api/refill/request-pharmacy HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50740 - "GET /api/notifications HTTP/1.1" 200 OK
 
 🔥🔥🔥 PHARMACY RESPONSE ENDPOINT CALLED 🔥🔥🔥
 Request method: POST
-Request headers: {'content-type': 'application/x-www-form-urlencoded; charset=UTF-8', 'x-twilio-service-flow-event': '%7B%22flow_id%22%3A%22voice_twimlverb_01kk6dcws1ew0v3e5fk6n8nn40%22%2C%22type%22%3A%22api_event%22%2C%22action%22%3A%22twiml_fetch%22%2C%22sub_action%22%3A%22completed%22%2C%22result%22%3A%22success%22%2C%22metadata%22%3A%7B%22transfer_type%22%3A%22call_transfer_url%22%7D%7D', 'i-twilio-idempotency-token': 'e4056912-bfbf-42f9-8cc8-47feff5df22e', 'x-twilio-answertimeout': 'PT15S', 'x-twilio-signature': 'rT2lTDwnXplNqjB/C9WAJDznu7s=', 'accept': '*/*', 'content-length': '509', 'x-home-region': 'us1', 'host': '9da529512ea7d5.lhr.life', 'user-agent': 'TwilioProxy/1.1', 'connection': 'close', 'x-forwarded-for': '174.129.107.216', 'x-forwarded-proto': 'https', 'forwarded': 'for=174.129.107.216;proto=https'}
+Request headers: {'content-type': 'application/x-www-form-urlencoded; charset=UTF-8', 'x-twilio-service-flow-event': '%7B%22flow_id%22%3A%22voice_twimlverb_01kk6ekby1e1msjk9b57ktxja8%22%2C%22type%22%3A%22api_event%22%2C%22action%22%3A%22twiml_fetch%22%2C%22sub_action%22%3A%22completed%22%2C%22result%22%3A%22success%22%2C%22metadata%22%3A%7B%22transfer_type%22%3A%22call_transfer_url%22%7D%7D', 'i-twilio-idempotency-token': 'b9819173-bff1-48ca-a730-e5bf39b37c5d', 'x-twilio-answertimeout': 'PT15S', 'x-twilio-signature': 'U9IlIknh6tlZxmw5jDvpQR3EgsE=', 'accept': '*/*', 'content-length': '509', 'x-home-region': 'us1', 'host': '51c77af4df5a1f.lhr.life', 'user-agent': 'TwilioProxy/1.1', 'connection': 'close', 'x-forwarded-for': '98.81.231.136', 'x-forwarded-proto': 'https', 'forwarded': 'for=98.81.231.136;proto=https'}
 Step 1: Reading form data...
 Form data keys: ['msg', 'Called', 'Digits', 'ToState', 'CallerCountry', 'Direction', 'CallerState', 'ToZip', 'CallSid', 'To', 'CallerZip', 'ToCountry', 'FinishedOnKey', 'CalledZip', 'ApiVersion', 'CalledCity', 'CallStatus', 'From', 'AccountSid', 'CalledCountry', 'CallerCity', 'ToCity', 'FromCountry', 'Caller', 'FromCity', 'CalledState', 'FromZip', 'FromState']
 Step 2: Parsed data
@@ -41,55 +41,4 @@ Step 3: Detection logic - said_no = False
 Step 5: Pharmacist said YES - building confirmation response...
 Step 6: Confirmation TwiML ready: 223 chars
 ✅ SUCCESS: Confirmation response ready
-INFO:     174.129.107.216:0 - "POST /api/pharmacy/response HTTP/1.1" 200 OK
-
-📨 TEXT MESSAGE WEBHOOK HIT: Call Completed
-  > Dispatching SMS to +19049103559...
-  ✓ SMS Sent! SID: SM08d55d7c8aeb503cfc494869e36cdd46
-INFO:     184.73.143.163:0 - "POST /api/pharmacy/call-completed HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49992 - "POST /api/chat HTTP/1.1" 200 OK
-INFO:     127.0.0.1:49992 - "POST /api/tts HTTP/1.1" 200 OK
-
-📞 PHARMACY CALL INITIATED
-  Patient: Maria
-  Request: order me Tylenol
-  Intent: Request to order Tylenol.
-  Calling Pharmacy: +19049103559
-  From: +18638801249
-  ✓ Synthesizing message for pharmacy...
-INFO:     127.0.0.1:49996 - "GET /favicon.ico HTTP/1.1" 404 Not Found
-  ✓ TTS complete. Audio size: 568050 bytes
-  ⬆️ Uploading pharmacy_1.mp3 to CDN...
-  ✓ Uploaded to CDN: https://h.uguu.se/BzLZMMgS.mp3
-  ✓ Audio URL ready: https://h.uguu.se/BzLZMMgS.mp3
-  ✓ Pharmacy call TwiML prepared
-  ⏳ 🤙 Initiating call to pharmacy...
-  ✓ ✅ Pharmacy call queued! Status: queued. Call SID: CAa3b7cc181f6120153649e0ec9376cc17
-INFO:     127.0.0.1:49992 - "POST /api/caregiver/alert HTTP/1.1" 200 OK
-
-🔥🔥🔥 PHARMACY RESPONSE ENDPOINT CALLED 🔥🔥🔥
-Request method: POST
-Request headers: {'content-type': 'application/x-www-form-urlencoded; charset=UTF-8', 'x-twilio-service-flow-event': '%7B%22flow_id%22%3A%22voice_twimlverb_01kk6dg186eej9ayybb8a6hg1f%22%2C%22type%22%3A%22api_event%22%2C%22action%22%3A%22twiml_fetch%22%2C%22sub_action%22%3A%22completed%22%2C%22result%22%3A%22success%22%2C%22metadata%22%3A%7B%22transfer_type%22%3A%22call_transfer_url%22%7D%7D', 'i-twilio-idempotency-token': '17980148-74e3-4e5d-90f1-23a806b4b503', 'x-twilio-answertimeout': 'PT15S', 'x-twilio-signature': 'jFBBU92Ecbbv/PMMYcYNQezqqxw=', 'accept': '*/*', 'content-length': '522', 'x-home-region': 'us1', 'host': '9da529512ea7d5.lhr.life', 'user-agent': 'TwilioProxy/1.1', 'connection': 'close', 'x-forwarded-for': '34.227.197.235', 'x-forwarded-proto': 'https', 'forwarded': 'for=34.227.197.235;proto=https'}
-Step 1: Reading form data...
-Form data keys: ['Called', 'ToState', 'CallerCountry', 'Direction', 'SpeechResult', 'CallerState', 'Language', 'ToZip', 'Confidence', 'CallSid', 'To', 'CallerZip', 'ToCountry', 'CalledZip', 'ApiVersion', 'CalledCity', 'CallStatus', 'From', 'AccountSid', 'CalledCountry', 'CallerCity', 'ToCity', 'FromCountry', 'Caller', 'FromCity', 'CalledState', 'FromZip', 'FromState']
-Step 2: Parsed data
-  Speech: 'yes.'
-  Digits: ''
-Step 3: Detection logic - said_no = False
-Step 5: Pharmacist said YES - building confirmation response...
-Step 6: Confirmation TwiML ready: 223 chars
-✅ SUCCESS: Confirmation response ready
-INFO:     34.227.197.235:0 - "POST /api/pharmacy/response HTTP/1.1" 200 OK
-
-📨 TEXT MESSAGE WEBHOOK HIT: Call Completed
-  > Dispatching SMS to +19049103559...
-  ✓ SMS Sent! SID: SM72e59a23a2ac733ca4025b27089b6011
-INFO:     44.211.147.96:0 - "POST /api/pharmacy/call-completed HTTP/1.1" 200 OK
-WARNING:  WatchFiles detected changes in 'main.py'. Reloading...
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [6256]
-INFO:     Started server process [6362]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
+INFO:     98.81.231.136:0 - "POST /api/pharmacy/response HTTP/1.1" 200 OK
