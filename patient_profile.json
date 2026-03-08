@@ -35,15 +35,22 @@
       "name": "Metformin",
       "dosage": "500mg",
       "frequency": "Twice daily with meals",
-      "purpose": "Blood Sugar Control"
+      "purpose": "Blood Sugar Control",
+      "days_supply": 30,
+      "last_fill_date": "2025-02-01",
+      "reminder_days_before": 3
     },
     {
       "name": "Levothyroxine",
       "dosage": "50mcg",
       "frequency": "Daily 30 minutes before breakfast",
-      "purpose": "Thyroid Hormone Replacement"
+      "purpose": "Thyroid Hormone Replacement",
+      "days_supply": 30,
+      "last_fill_date": "2025-02-01",
+      "reminder_days_before": 3
     }
   ],
+  "refill_reminders": {},
   "caregiver": {
     "relationship": "Son",
     "name": "Carlos Ramirez",
@@ -52,5 +59,16 @@
     "sms_alerts_enabled": true,
     "notification_provider": "Twilio"
   },
-  "emergency_log": []
+  "emergency_log": [],
+  "scan_history": [
+    {
+      "id": "7758b611-e8ba-4ff2-a81a-eb8368561339",
+      "drug_name": "Unknown",
+      "drug_group": "Unknown",
+      "drug_description": "Unknown",
+      "scanned_at": "2026-03-08T07:31:57.881886Z",
+      "bookmarked": false,
+      "allergy_conflict": false
+    }
+  ]
 }

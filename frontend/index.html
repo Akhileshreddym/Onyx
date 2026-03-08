@@ -211,7 +211,7 @@
 <body class="flex flex-col h-screen overflow-hidden text-sm">
 
   <!-- ─── HEADER ─────────────────────────────────────────── -->
-  <header id="el-header" class="flex items-center justify-between px-6 py-4 shrink-0"
+  <header id="el-header" class="relative z-50 flex items-center justify-between px-6 py-4 shrink-0"
     style="opacity:0;background:rgba(8,12,9,0.85);border-bottom:1px solid var(--gold-wire)">
     <div class="flex items-center gap-5">
       <div class="w-9 h-9 rounded-full flex items-center justify-center"
@@ -238,14 +238,25 @@
       </div>
     </div>
     <div class="flex items-center gap-4">
-      <button class="relative" style="color:var(--text-muted)">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-          <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-        </svg>
-        <span class="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full"
-          style="background:#ef4444;border:2px solid var(--bg-base)"></span>
-      </button>
+      <div class="relative">
+        <button id="header-bell" type="button" class="relative p-1 rounded-lg transition-colors hover:opacity-90" style="color:var(--text-muted)" aria-label="Notifications" aria-expanded="false" aria-haspopup="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+          </svg>
+          <span id="header-bell-badge" class="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center text-[10px] font-semibold hidden"
+            style="background:var(--gold-classic);color:#0e0a02;border:2px solid var(--bg-base)">0</span>
+        </button>
+        <div id="header-notifications-dropdown" class="absolute right-0 top-full mt-1.5 w-[320px] max-h-[320px] overflow-hidden flex flex-col hidden rounded-xl shadow-xl z-50"
+          style="background:var(--bg-sidebar);border:1px solid var(--gold-wire)">
+          <div class="p-3 shrink-0" style="border-bottom:1px solid rgba(255,255,255,0.08)">
+            <h3 class="text-[13px] font-serif text-white tracking-wide">Notifications</h3>
+          </div>
+          <div id="header-notifications-list" class="flex-1 overflow-y-auto p-2 space-y-1.5 min-h-[80px]">
+            <p id="header-notifications-empty" class="text-[12px] py-4 text-center hidden" style="color:var(--text-muted)">No new notifications.</p>
+          </div>
+        </div>
+      </div>
       <div class="w-10 h-10 rounded-full bg-cover bg-center"
         style="border:2px solid rgba(212,175,55,0.3);box-shadow:0 0 15px rgba(212,175,55,0.1);background-image:url('https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80')">
       </div>
@@ -263,18 +274,18 @@
             d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
         </svg>
       </button>
-      <button class="sb-icon w-9 h-9 rounded-xl flex items-center justify-center">
+      <button id="sb-bell" class="sb-icon w-9 h-9 rounded-xl flex items-center justify-center" type="button" aria-label="Refill reminders">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
           <path d="M13.73 21a2 2 0 0 1-3.46 0" />
         </svg>
       </button>
-      <button class="sb-icon w-9 h-9 rounded-xl flex items-center justify-center">
+      <button id="sb-bookmark" class="sb-icon w-9 h-9 rounded-xl flex items-center justify-center" type="button" aria-label="Scan history">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
         </svg>
       </button>
-      <button class="sb-icon w-9 h-9 rounded-xl flex items-center justify-center">
+      <button id="sb-menu" class="sb-icon w-9 h-9 rounded-xl flex items-center justify-center" type="button" aria-label="Menu">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="8" y1="6" x2="21" y2="6" />
           <line x1="8" y1="12" x2="21" y2="12" />
@@ -294,8 +305,52 @@
       </button>
     </aside>
 
+    <!-- Sidebar slide-out panel -->
+    <div id="sidebar-panel-overlay" class="fixed inset-0 z-40 hidden" style="background:rgba(0,0,0,0.3)" aria-hidden="true"></div>
+    <div id="sidebar-panel" class="fixed left-[50px] top-0 bottom-0 z-50 w-[320px] max-h-full overflow-hidden flex flex-col hidden"
+      style="background:var(--bg-sidebar);border-right:1px solid var(--gold-wire);box-shadow:4px 0 24px rgba(0,0,0,0.4)">
+      <div class="p-4 flex items-center justify-between shrink-0" style="border-bottom:1px solid rgba(255,255,255,0.08)">
+        <h2 id="sidebar-panel-title" class="text-[16px] font-serif text-white tracking-wide">Menu</h2>
+        <button id="sidebar-panel-close" type="button" class="sb-icon w-8 h-8 rounded-lg flex items-center justify-center" aria-label="Close panel">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="flex-1 overflow-y-auto p-4">
+        <div id="panel-refill" class="hidden flex flex-col gap-3">
+          <p id="panel-refill-message" class="text-[13px] text-white/90"></p>
+          <div id="panel-refill-actions" class="flex flex-wrap gap-2"></div>
+        </div>
+        <div id="panel-bookmarks" class="hidden flex flex-col gap-2">
+          <label class="flex items-center gap-2 cursor-pointer text-[11px]" style="color:var(--text-muted)">
+            <input type="checkbox" id="panel-bookmarks-only" class="rounded" style="accent-color:var(--gold-classic)">
+            <span>Bookmarks only</span>
+          </label>
+          <div id="panel-bookmarks-list" class="space-y-2 min-h-[80px]"></div>
+          <p id="panel-bookmarks-empty" class="text-[12px] opacity-70 hidden" style="color:var(--text-muted)">No scans yet.</p>
+        </div>
+        <div id="panel-menu" class="flex flex-col gap-2">
+          <button type="button" class="sidebar-menu-item text-left px-3 py-2.5 rounded-lg text-[13px] transition-colors" style="color:var(--text-muted);background:rgba(255,255,255,0.04)" data-panel="refill">Refill reminders</button>
+          <button type="button" class="sidebar-menu-item text-left px-3 py-2.5 rounded-lg text-[13px] transition-colors" style="color:var(--text-muted);background:rgba(255,255,255,0.04)" data-panel="bookmarks">Scan history</button>
+          <a href="/onboarding" class="px-3 py-2.5 rounded-lg text-[13px] transition-colors" style="color:var(--text-muted);background:rgba(255,255,255,0.04);text-decoration:none">Onboarding</a>
+          <button type="button" id="panel-menu-dossier" class="text-left px-3 py-2.5 rounded-lg text-[13px] transition-colors" style="color:var(--text-muted);background:rgba(255,255,255,0.04)">The Dossier</button>
+        </div>
+      </div>
+    </div>
+
     <!-- ─── CONTENT GRID ─────────────────────────────────── -->
     <div class="flex-1 grid grid-cols-[1fr_360px] grid-rows-[2fr_1fr] gap-4 p-4 h-full">
+
+      <!-- Refill reminder banner -->
+      <div id="refill-banner" class="col-span-2 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
+        style="display:none;background:rgba(212,175,55,0.12);border:1px solid var(--gold-wire)">
+        <p id="refill-banner-message" class="text-[13px] text-white/95 font-medium"></p>
+        <div class="flex items-center gap-2 shrink-0">
+          <button id="refill-contact-pharmacist-btn" type="button"
+            class="px-4 py-2 rounded-lg text-[12px] font-semibold transition-all duration-200"
+            style="background:var(--gold-classic);color:#0e0a02">Contact pharmacist for refills</button>
+          <button id="refill-banner-dismiss" type="button" class="text-[11px] opacity-70 hover:opacity-100" style="color:var(--text-muted)">Dismiss</button>
+        </div>
+      </div>
 
       <!-- ═══ THE DIALOGUE ═══ -->
       <section id="el-dialogue" class="glass-panel row-span-2 flex flex-col relative overflow-hidden" style="opacity:0">
@@ -409,6 +464,21 @@
           class="btn-scan-gold mt-auto w-full py-3 rounded-xl text-[12px] tracking-wider transition-all duration-200">
           Scan New Medication
         </button>
+
+        <!-- Scan history -->
+        <div class="mt-4 pt-4" style="border-top:1px solid rgba(255,255,255,0.08)">
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="text-[12px] font-serif text-white tracking-wide">Scan history</h3>
+            <label class="flex items-center gap-1.5 cursor-pointer">
+              <input type="checkbox" id="scan-history-bookmarks-only" class="rounded" style="accent-color:var(--gold-classic)">
+              <span class="text-[10px]" style="color:var(--text-muted)">Bookmarks only</span>
+            </label>
+          </div>
+          <div id="scan-history-list" class="space-y-2 max-h-[200px] overflow-y-auto text-[11px]"
+            style="color:var(--text-muted)">
+            <p id="scan-history-empty" class="opacity-70">No scans yet.</p>
+          </div>
+        </div>
       </section>
 
       <!-- ═══ THE DOSSIER ═══ -->
@@ -647,6 +717,199 @@
         console.error("Failed to load patient data:", e);
       }
 
+      // Refill reminder: load status, show banner, contact pharmacist
+      async function loadRefillStatus() {
+        const banner = document.getElementById('refill-banner');
+        const msgEl = document.getElementById('refill-banner-message');
+        const btn = document.getElementById('refill-contact-pharmacist-btn');
+        try {
+          const res = await fetch('/api/refill/status');
+          const data = await res.json();
+          const due = data.due_medications || [];
+          if (due.length > 0) {
+            msgEl.textContent = data.message || ('Refill due for: ' + due.map(m => m.name).join(', '));
+            banner.style.display = 'flex';
+          } else {
+            banner.style.display = 'none';
+          }
+        } catch (e) {
+          console.error("Refill status failed:", e);
+          banner.style.display = 'none';
+        }
+      }
+      document.getElementById('refill-banner-dismiss').addEventListener('click', () => {
+        document.getElementById('refill-banner').style.display = 'none';
+      });
+      document.getElementById('refill-contact-pharmacist-btn').addEventListener('click', async () => {
+        const btn = document.getElementById('refill-contact-pharmacist-btn');
+        const orig = btn.textContent;
+        btn.textContent = 'Calling pharmacy…';
+        btn.disabled = true;
+        try {
+          const res = await fetch('/api/refill/request-pharmacy', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ medication_names: 'all' })
+          });
+          const data = await res.json().catch(() => ({}));
+          if (res.ok) {
+            btn.textContent = 'Call placed';
+            document.getElementById('refill-banner').style.display = 'none';
+            if (typeof loadHeaderNotifications === 'function') loadHeaderNotifications();
+          } else {
+            btn.textContent = data.error || 'Request failed';
+          }
+        } catch (e) {
+          btn.textContent = 'Request failed';
+        }
+        btn.disabled = false;
+        setTimeout(() => { btn.textContent = orig; }, 3000);
+      });
+      loadRefillStatus();
+
+      // Header bell notifications: fetch, badge, dropdown list, toggle, click-outside, Escape
+      const headerBell = document.getElementById('header-bell');
+      const headerBellBadge = document.getElementById('header-bell-badge');
+      const headerNotificationsDropdown = document.getElementById('header-notifications-dropdown');
+      const headerNotificationsList = document.getElementById('header-notifications-list');
+      const headerNotificationsEmpty = document.getElementById('header-notifications-empty');
+
+      function escapeHtml(s) {
+        if (s == null) return '';
+        const div = document.createElement('div');
+        div.textContent = s;
+        return div.innerHTML;
+      }
+
+      const NOTIF_ORDER = { refill: 0, refill_upcoming: 1, allergy_scan: 2 };
+      const SECTION_LABELS = { refill: 'Due now', refill_upcoming: 'Upcoming refills', allergy_scan: '' };
+
+      async function loadHeaderNotifications() {
+        try {
+          const res = await fetch('/api/notifications');
+          const data = await res.json();
+          let notifications = data.notifications || [];
+          notifications = notifications.slice().sort((a, b) => (NOTIF_ORDER[a.type] ?? 3) - (NOTIF_ORDER[b.type] ?? 3));
+          const count = notifications.length;
+          if (count > 0) {
+            headerBellBadge.textContent = count > 99 ? '99+' : count;
+            headerBellBadge.classList.remove('hidden');
+          } else {
+            headerBellBadge.classList.add('hidden');
+          }
+          headerNotificationsEmpty.classList.toggle('hidden', count > 0);
+          headerNotificationsList.querySelectorAll('.header-notification-item').forEach(el => el.remove());
+          headerNotificationsList.querySelectorAll('.header-notif-section').forEach(el => el.remove());
+          let lastType = null;
+          notifications.forEach(n => {
+            if (SECTION_LABELS[n.type] && n.type !== lastType) {
+              const section = document.createElement('div');
+              section.className = 'header-notif-section text-[10px] uppercase tracking-wider mt-2 mb-1 first:mt-0';
+              section.style.color = 'var(--text-muted)';
+              section.textContent = SECTION_LABELS[n.type];
+              headerNotificationsList.appendChild(section);
+              lastType = n.type;
+            } else if (!SECTION_LABELS[n.type]) lastType = n.type;
+            const item = document.createElement('div');
+            item.className = 'header-notification-item rounded-lg p-3 text-left';
+            item.style.background = 'rgba(255,255,255,0.04)';
+            item.style.border = '1px solid rgba(255,255,255,0.06)';
+            const title = escapeHtml(n.title || '');
+            const message = escapeHtml(n.message || '');
+            let actions = '';
+            if (n.action === 'contact_pharmacist') {
+              actions = `<button type="button" class="header-notif-action-pharmacy mt-2 px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-opacity hover:opacity-90" style="background:var(--gold-classic);color:#0e0a02">Contact pharmacist</button>`;
+            } else if (n.action === 'view_scan_history') {
+              actions = `<button type="button" class="header-notif-action-scan mt-2 px-3 py-1.5 rounded-lg text-[11px] font-medium transition-opacity hover:opacity-90" style="color:var(--gold-classic);border:1px solid var(--gold-wire)">View scan history</button>`;
+            } else if (n.action === 'view_refill') {
+              actions = `<button type="button" class="header-notif-action-view-refill mt-2 px-3 py-1.5 rounded-lg text-[11px] font-medium transition-opacity hover:opacity-90" style="color:var(--gold-classic);border:1px solid var(--gold-wire)">See refill info</button>`;
+            }
+            item.innerHTML = `<div class="text-[12px] font-medium text-white">${title}</div><div class="text-[11px] mt-0.5" style="color:var(--text-muted)">${message}</div>${actions}`;
+            if (n.action === 'contact_pharmacist') {
+              item.querySelector('.header-notif-action-pharmacy').addEventListener('click', async () => {
+                const btn = item.querySelector('.header-notif-action-pharmacy');
+                btn.textContent = 'Calling…';
+                btn.disabled = true;
+                try {
+                  const r = await fetch('/api/refill/request-pharmacy', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ medication_names: 'all' }) });
+                  if (r.ok) {
+                    btn.textContent = 'Call placed';
+                    document.getElementById('refill-banner').style.display = 'none';
+                    await loadHeaderNotifications();
+                    if (typeof loadRefillStatus === 'function') loadRefillStatus();
+                  } else {
+                    const d = await r.json().catch(() => ({}));
+                    btn.textContent = d.error || 'Failed';
+                  }
+                } catch (e) {
+                  btn.textContent = 'Failed';
+                }
+                btn.disabled = false;
+              });
+            } else if (n.action === 'view_scan_history') {
+              item.querySelector('.header-notif-action-scan').addEventListener('click', () => {
+                if (typeof openPanel === 'function') openPanel('bookmarks');
+                closeHeaderNotificationsDropdown();
+              });
+            } else if (n.action === 'view_refill') {
+              const btn = item.querySelector('.header-notif-action-view-refill');
+              if (btn) btn.addEventListener('click', () => {
+                if (typeof openPanel === 'function') openPanel('refill');
+                closeHeaderNotificationsDropdown();
+              });
+            }
+            headerNotificationsList.appendChild(item);
+          });
+        } catch (e) {
+          console.error('Header notifications failed:', e);
+          headerBellBadge.classList.add('hidden');
+          headerNotificationsEmpty.textContent = 'Could not load notifications.';
+          headerNotificationsEmpty.classList.remove('hidden');
+        }
+      }
+
+      function closeHeaderNotificationsDropdown() {
+        if (headerNotificationsDropdown) {
+          headerNotificationsDropdown.classList.add('hidden');
+          headerNotificationsDropdown.style.display = '';
+        }
+        if (headerBell) headerBell.setAttribute('aria-expanded', 'false');
+      }
+
+      function openHeaderNotificationsDropdown() {
+        if (!headerNotificationsDropdown || !headerBell) return;
+        headerNotificationsDropdown.classList.remove('hidden');
+        headerNotificationsDropdown.style.display = 'flex';
+        headerBell.setAttribute('aria-expanded', 'true');
+        if (typeof gsap !== 'undefined') {
+          gsap.fromTo(headerNotificationsDropdown, { opacity: 0, y: -6 }, { opacity: 1, y: 0, duration: 0.2, ease: 'power2.out' });
+        }
+      }
+
+      headerBell.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!headerNotificationsDropdown) return;
+        const isOpen = headerNotificationsDropdown.classList.contains('hidden');
+        if (isOpen) {
+          openHeaderNotificationsDropdown();
+          loadHeaderNotifications();
+        } else {
+          closeHeaderNotificationsDropdown();
+        }
+      });
+
+      document.addEventListener('click', (e) => {
+        if (headerNotificationsDropdown && headerBell && !headerNotificationsDropdown.classList.contains('hidden') && !headerBell.contains(e.target) && !headerNotificationsDropdown.contains(e.target)) {
+          closeHeaderNotificationsDropdown();
+        }
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeHeaderNotificationsDropdown();
+      });
+
+      loadHeaderNotifications();
+
       // 2. Entrance cascade
       const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
       tl.fromTo('#el-header', { opacity: 0, y: -12 }, { opacity: 1, y: 0, duration: 0.9 })
@@ -768,6 +1031,7 @@
               gsap.fromTo(alertBox, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5 });
               await fetch('/api/caregiver/alert', { method: 'POST' });
             }
+            if (typeof loadScanHistory === 'function') loadScanHistory();
           } catch (e) {
             console.error("Scan failed", e);
           } finally {
@@ -775,6 +1039,207 @@
             scanBtn.style.opacity = '1';
           }
         }
+      });
+
+      // Scan history: load, render, bookmark toggle
+      async function loadScanHistory() {
+        const bookmarksOnly = document.getElementById('scan-history-bookmarks-only').checked;
+        const listEl = document.getElementById('scan-history-list');
+        const emptyEl = document.getElementById('scan-history-empty');
+        try {
+          const res = await fetch('/api/scan/history' + (bookmarksOnly ? '?bookmarked_only=true' : ''));
+          const data = await res.json();
+          const history = data.scan_history || [];
+          emptyEl.style.display = history.length ? 'none' : 'block';
+          listEl.querySelectorAll('.scan-history-item').forEach(el => el.remove());
+          history.forEach(entry => {
+            const row = document.createElement('div');
+            row.className = 'scan-history-item flex items-start gap-2 rounded-lg p-2';
+            row.style.background = 'rgba(255,255,255,0.04)';
+            row.style.border = '1px solid rgba(255,255,255,0.06)';
+            const dateStr = entry.scanned_at ? new Date(entry.scanned_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+            const conflictBadge = entry.allergy_conflict ? '<span class="text-red-400 text-[9px] uppercase ml-1">Allergy</span>' : '';
+            row.innerHTML = `
+              <button type="button" class="bookmark-btn shrink-0 mt-0.5 focus:outline-none" data-id="${entry.id}" title="${entry.bookmarked ? 'Remove bookmark' : 'Bookmark'}" aria-label="Toggle bookmark">
+                <span style="color:${entry.bookmarked ? 'var(--gold-classic)' : 'rgba(255,255,255,0.3)'}">${entry.bookmarked ? '★' : '☆'}</span>
+              </button>
+              <div class="min-w-0 flex-1">
+                <span class="text-white font-medium">${escapeHtml(entry.drug_name || 'Unknown')}</span>
+                <span class="opacity-75"> (${escapeHtml(entry.drug_group || '')})</span>${conflictBadge}
+                <div class="text-[10px] opacity-60 mt-0.5">${escapeHtml(dateStr)}</div>
+              </div>
+            `;
+            row.querySelector('.bookmark-btn').addEventListener('click', async () => {
+              const next = !entry.bookmarked;
+              try {
+                await fetch('/api/scan/history/' + entry.id, {
+                  method: 'PATCH',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ bookmarked: next })
+                });
+                entry.bookmarked = next;
+                loadScanHistory();
+              } catch (e) { console.error('Bookmark update failed', e); }
+            });
+            listEl.appendChild(row);
+          });
+        } catch (e) {
+          console.error('Load scan history failed', e);
+          emptyEl.textContent = 'Could not load history.';
+          emptyEl.style.display = 'block';
+        }
+      }
+      function escapeHtml(s) {
+        const div = document.createElement('div');
+        div.textContent = s;
+        return div.innerHTML;
+      }
+      document.getElementById('scan-history-bookmarks-only').addEventListener('change', loadScanHistory);
+      loadScanHistory();
+
+      // Sidebar panel: bell (refill), bookmark (scan history), menu
+      const sidebarPanel = document.getElementById('sidebar-panel');
+      const sidebarOverlay = document.getElementById('sidebar-panel-overlay');
+      const sidebarPanelTitle = document.getElementById('sidebar-panel-title');
+      const sidebarPanelClose = document.getElementById('sidebar-panel-close');
+      const panelRefill = document.getElementById('panel-refill');
+      const panelRefillMessage = document.getElementById('panel-refill-message');
+      const panelRefillActions = document.getElementById('panel-refill-actions');
+      const panelBookmarks = document.getElementById('panel-bookmarks');
+      const panelBookmarksList = document.getElementById('panel-bookmarks-list');
+      const panelBookmarksEmpty = document.getElementById('panel-bookmarks-empty');
+      const panelBookmarksOnly = document.getElementById('panel-bookmarks-only');
+      const panelMenu = document.getElementById('panel-menu');
+      const sbIcons = document.querySelectorAll('.sb-icon');
+      let currentPanel = null;
+
+      function setActiveIcon(id) {
+        sbIcons.forEach(btn => { btn.classList.remove('active'); if (btn.id === id) btn.classList.add('active'); });
+      }
+      function showPanelContent(panelName) {
+        panelRefill.classList.add('hidden');
+        panelBookmarks.classList.add('hidden');
+        panelMenu.classList.add('hidden');
+        if (panelName === 'refill') { panelRefill.classList.remove('hidden'); sidebarPanelTitle.textContent = 'Refill reminders'; loadPanelRefill(); }
+        else if (panelName === 'bookmarks') { panelBookmarks.classList.remove('hidden'); sidebarPanelTitle.textContent = 'Scan history'; loadPanelBookmarks(); }
+        else { panelMenu.classList.remove('hidden'); sidebarPanelTitle.textContent = 'Menu'; }
+      }
+      function openPanel(panelName) {
+        currentPanel = panelName;
+        setActiveIcon(panelName === 'refill' ? 'sb-bell' : panelName === 'bookmarks' ? 'sb-bookmark' : 'sb-menu');
+        sidebarOverlay.classList.remove('hidden');
+        sidebarOverlay.setAttribute('aria-hidden', 'false');
+        sidebarPanel.classList.remove('hidden');
+        showPanelContent(panelName);
+      }
+      function closePanel() {
+        currentPanel = null;
+        sbIcons.forEach(btn => btn.classList.remove('active'));
+        const firstSb = document.querySelector('#el-sidebar .sb-icon');
+        if (firstSb && !firstSb.id) firstSb.classList.add('active');
+        sidebarPanel.classList.add('hidden');
+        sidebarOverlay.classList.add('hidden');
+        sidebarOverlay.setAttribute('aria-hidden', 'true');
+      }
+
+      async function loadPanelRefill() {
+        panelRefillMessage.textContent = 'Loading…';
+        panelRefillActions.innerHTML = '';
+        try {
+          const res = await fetch('/api/refill/status');
+          const data = await res.json();
+          const due = data.due_medications || [];
+          if (due.length > 0) {
+            panelRefillMessage.textContent = data.message || ('Refill due for: ' + due.map(m => m.name).join(', '));
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'px-4 py-2 rounded-lg text-[12px] font-semibold';
+            btn.style.cssText = 'background:var(--gold-classic);color:#0e0a02';
+            btn.textContent = 'Contact pharmacist for refills';
+            btn.addEventListener('click', async () => {
+              btn.textContent = 'Calling…';
+              btn.disabled = true;
+              try {
+                const r = await fetch('/api/refill/request-pharmacy', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ medication_names: 'all' }) });
+                if (r.ok) { btn.textContent = 'Call placed'; document.getElementById('refill-banner').style.display = 'none'; closePanel(); }
+                else { const d = await r.json().catch(() => ({})); btn.textContent = d.error || 'Failed'; }
+              } catch (e) { btn.textContent = 'Failed'; }
+              btn.disabled = false;
+            });
+            panelRefillActions.appendChild(btn);
+          } else {
+            panelRefillMessage.textContent = "You're all set — no refills due.";
+          }
+        } catch (e) {
+          panelRefillMessage.textContent = 'Could not load refill status.';
+        }
+      }
+
+      function renderScanHistoryInto(container, bookmarkedOnly) {
+        container.innerHTML = '';
+        panelBookmarksEmpty.classList.add('hidden');
+        fetch('/api/scan/history' + (bookmarkedOnly ? '?bookmarked_only=true' : ''))
+          .then(res => res.json())
+          .then(data => {
+            const history = data.scan_history || [];
+            if (history.length === 0) { panelBookmarksEmpty.classList.remove('hidden'); return; }
+            history.forEach(entry => {
+              const row = document.createElement('div');
+              row.className = 'scan-history-item flex items-start gap-2 rounded-lg p-2';
+              row.style.background = 'rgba(255,255,255,0.04)';
+              row.style.border = '1px solid rgba(255,255,255,0.06)';
+              const dateStr = entry.scanned_at ? new Date(entry.scanned_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+              const conflictBadge = entry.allergy_conflict ? '<span class="text-red-400 text-[9px] uppercase ml-1">Allergy</span>' : '';
+              row.innerHTML = `
+                <button type="button" class="bookmark-btn shrink-0 mt-0.5 focus:outline-none" data-id="${entry.id}" aria-label="Toggle bookmark">
+                  <span style="color:${entry.bookmarked ? 'var(--gold-classic)' : 'rgba(255,255,255,0.3)'}">${entry.bookmarked ? '★' : '☆'}</span>
+                </button>
+                <div class="min-w-0 flex-1 text-[11px]" style="color:var(--text-muted)">
+                  <span class="text-white font-medium">${escapeHtml(entry.drug_name || 'Unknown')}</span>
+                  <span class="opacity-75"> (${escapeHtml(entry.drug_group || '')})</span>${conflictBadge}
+                  <div class="text-[10px] opacity-60 mt-0.5">${escapeHtml(dateStr)}</div>
+                </div>
+              `;
+              row.querySelector('.bookmark-btn').addEventListener('click', async () => {
+                const next = !entry.bookmarked;
+                try {
+                  await fetch('/api/scan/history/' + entry.id, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ bookmarked: next }) });
+                  entry.bookmarked = next;
+                  renderScanHistoryInto(panelBookmarksList, panelBookmarksOnly.checked);
+                  if (typeof loadScanHistory === 'function') loadScanHistory();
+                } catch (e) { console.error('Bookmark update failed', e); }
+              });
+              container.appendChild(row);
+            });
+          })
+          .catch(() => { panelBookmarksEmpty.textContent = 'Could not load history.'; panelBookmarksEmpty.classList.remove('hidden'); });
+      }
+      function loadPanelBookmarks() {
+        renderScanHistoryInto(panelBookmarksList, panelBookmarksOnly.checked);
+      }
+
+      document.getElementById('sb-bell').addEventListener('click', () => {
+        if (currentPanel === 'refill') closePanel();
+        else openPanel('refill');
+      });
+      document.getElementById('sb-bookmark').addEventListener('click', () => {
+        if (currentPanel === 'bookmarks') closePanel();
+        else openPanel('bookmarks');
+      });
+      document.getElementById('sb-menu').addEventListener('click', () => {
+        if (currentPanel === 'menu') closePanel();
+        else openPanel('menu');
+      });
+      sidebarPanelClose.addEventListener('click', closePanel);
+      sidebarOverlay.addEventListener('click', closePanel);
+      panelBookmarksOnly.addEventListener('change', () => { if (currentPanel === 'bookmarks') loadPanelBookmarks(); });
+
+      document.querySelectorAll('.sidebar-menu-item').forEach(btn => {
+        btn.addEventListener('click', () => { const p = btn.getAttribute('data-panel'); if (p) openPanel(p); });
+      });
+      document.getElementById('panel-menu-dossier').addEventListener('click', () => {
+        document.getElementById('el-dossier').scrollIntoView({ behavior: 'smooth' });
+        closePanel();
       });
 
       // Voice simulation logic - Toggle ON/OFF

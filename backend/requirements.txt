@@ -5,3 +5,6 @@ openai
 elevenlabs
 python-multipart
 twilio
+apscheduler
+pymupdf
+Pillow

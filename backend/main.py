@@ -2,8 +2,11 @@
 Onyx Concierge — FastAPI Backend
 Serves static frontend + API stubs for the hackathon demo.
 """
+from __future__ import annotations
 
 import json
+import uuid
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -29,6 +32,119 @@ FRONTEND_DIR = BASE_DIR / "frontend"
 def load_patient_data() -> dict:
     with open(PATIENT_FILE, "r") as f:
         return json.load(f)
+
+
+def save_patient_data(data: dict) -> None:
+    with open(PATIENT_FILE, "w") as f:
+        json.dump(data, f, indent=2)
+
+
+def get_refill_due_medications() -> list:
+    """Return list of medications due for refill (today >= next_refill - reminder_days_before)."""
+    patient = load_patient_data()
+    meds = patient.get("current_medications", [])
+    today = date.today()
+    due = []
+    for m in meds:
+        name = m.get("name")
+        last_fill = m.get("last_fill_date")
+        days_supply = m.get("days_supply")
+        reminder_days = m.get("reminder_days_before", 3)
+        if not name or last_fill is None or days_supply is None:
+            continue
+        try:
+            if isinstance(last_fill, str):
+                last = datetime.strptime(last_fill.strip()[:10], "%Y-%m-%d").date()
+            else:
+                continue
+            days_int = int(days_supply)
+            reminder_int = int(reminder_days)
+        except (ValueError, TypeError):
+            continue
+        run_out = last + timedelta(days=days_int)
+        remind_from = run_out - timedelta(days=reminder_int)
+        if today >= remind_from:
+            due.append({**m, "next_refill_date": run_out.isoformat()})
+    return due
+
+
+def get_refill_upcoming_medications(days_ahead: int = 14) -> list:
+    """Return medications whose reminder date is in the next days_ahead days (not yet due)."""
+    due_names = {m.get("name") for m in get_refill_due_medications() if m.get("name")}
+    patient = load_patient_data()
+    meds = patient.get("current_medications", [])
+    today = date.today()
+    window_end = today + timedelta(days=days_ahead)
+    upcoming = []
+    for m in meds:
+        name = m.get("name")
+        if name in due_names:
+            continue
+        last_fill = m.get("last_fill_date")
+        days_supply = m.get("days_supply")
+        reminder_days = m.get("reminder_days_before", 3)
+        if not name or last_fill is None or days_supply is None:
+            continue
+        try:
+            if isinstance(last_fill, str):
+                last = datetime.strptime(last_fill.strip()[:10], "%Y-%m-%d").date()
+            else:
+                continue
+            days_int = int(days_supply)
+            reminder_int = int(reminder_days)
+        except (ValueError, TypeError):
+            continue
+        run_out = last + timedelta(days=days_int)
+        remind_from = run_out - timedelta(days=reminder_int)
+        if today < remind_from and remind_from <= window_end:
+            days_until = (remind_from - today).days
+            upcoming.append({
+                **m,
+                "next_refill_date": run_out.isoformat(),
+                "remind_from": remind_from.isoformat(),
+                "days_until_reminder": days_until,
+            })
+    return upcoming
+
+
+def _refill_reminder_job() -> None:
+    """Daily job: mark refill reminder state for due meds so we can avoid spamming."""
+    try:
+        due = get_refill_due_medications()
+        if not due:
+            return
+        patient = load_patient_data()
+        reminders = patient.get("refill_reminders", {})
+        now = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+        for m in due:
+            name = m.get("name")
+            if name:
+                reminders[name] = now
+        patient["refill_reminders"] = reminders
+        save_patient_data(patient)
+    except Exception as e:
+        print(f"Refill reminder job error: {e}")
+
+
+_refill_scheduler = None
+try:
+    from apscheduler.schedulers.background import BackgroundScheduler
+    _refill_scheduler = BackgroundScheduler()
+    _refill_scheduler.add_job(_refill_reminder_job, "cron", hour=9, minute=0)  # daily at 9:00
+except ImportError:
+    pass
+
+
+@app.on_event("startup")
+def _start_refill_scheduler():
+    if _refill_scheduler is not None and not _refill_scheduler.running:
+        _refill_scheduler.start()
+
+
+@app.on_event("shutdown")
+def _stop_refill_scheduler():
+    if _refill_scheduler is not None:
+        _refill_scheduler.shutdown()
 
 
 # ── API Routes (Real Integrations) ─────────────────────────
@@ -105,7 +221,7 @@ async def process_report(file: UploadFile = File(...)):
             
         messages.append({
             "role": "user",
-            "content": f"Extract patient profile from this text:\n\n{text_content}\n\nSchema Requirements:\n{{\"patient\":{{\"id\":\"...\",\"first_name\":\"...\",\"last_name\":\"...\",\"date_of_birth\":\"MM/DD/YYYY\",\"age\":0,\"gender\":\"...\",\"location\":{{\"city\":\"...\",\"state\":\"...\",\"zip\":\"...\"}},\"primary_physician\":\"...\",\"insurance\":\"...\"}},\"allergies\":[{{\"substance\":\"...\",\"severity\":\"...\",\"reaction\":\"...\",\"priority\":\"HIGH/LOW\",\"verified\":true}}],\"current_medications\":[{{\"name\":\"...\",\"dosage\":\"...\",\"frequency\":\"...\",\"purpose\":\"...\"}}],\"caregiver\":{{\"relationship\":\"...\",\"name\":\"...\",\"phone\":\"...\",\"connection_status\":\"Active\",\"sms_alerts_enabled\":true,\"notification_provider\":\"Twilio\"}},\"emergency_log\":[]}}"
+            "content": f"Extract patient profile from this text:\n\n{text_content}\n\nSchema Requirements:\n{{\"patient\":{{\"id\":\"...\",\"first_name\":\"...\",\"last_name\":\"...\",\"date_of_birth\":\"MM/DD/YYYY\",\"age\":0,\"gender\":\"...\",\"location\":{{\"city\":\"...\",\"state\":\"...\",\"zip\":\"...\"}},\"primary_physician\":\"...\",\"insurance\":\"...\"}},\"allergies\":[{{\"substance\":\"...\",\"severity\":\"...\",\"reaction\":\"...\",\"priority\":\"HIGH/LOW\",\"verified\":true}}],\"current_medications\":[{{\"name\":\"...\",\"dosage\":\"...\",\"frequency\":\"...\",\"purpose\":\"...\",\"days_supply\":30,\"last_fill_date\":\"YYYY-MM-DD\",\"reminder_days_before\":3}}],\"caregiver\":{{\"relationship\":\"...\",\"name\":\"...\",\"phone\":\"...\",\"connection_status\":\"Active\",\"sms_alerts_enabled\":true,\"notification_provider\":\"Twilio\"}},\"emergency_log\":[]}}"
         })
     elif content_type.startswith("image/"):
         base64_img = base64.b64encode(file_bytes).decode('utf-8')
@@ -114,7 +230,7 @@ async def process_report(file: UploadFile = File(...)):
             "content": [
                 {
                     "type": "text",
-                    "text": f"Extract patient profile from this image. Schema Requirements:\n{{\"patient\":{{\"id\":\"...\",\"first_name\":\"...\",\"last_name\":\"...\",\"date_of_birth\":\"MM/DD/YYYY\",\"age\":0,\"gender\":\"...\",\"location\":{{\"city\":\"...\",\"state\":\"...\",\"zip\":\"...\"}},\"primary_physician\":\"...\",\"insurance\":\"...\"}},\"allergies\":[{{\"substance\":\"...\",\"severity\":\"...\",\"reaction\":\"...\",\"priority\":\"HIGH/LOW\",\"verified\":true}}],\"current_medications\":[{{\"name\":\"...\",\"dosage\":\"...\",\"frequency\":\"...\",\"purpose\":\"...\"}}],\"caregiver\":{{\"relationship\":\"...\",\"name\":\"...\",\"phone\":\"...\",\"connection_status\":\"Active\",\"sms_alerts_enabled\":true,\"notification_provider\":\"Twilio\"}},\"emergency_log\":[]}}"
+                    "text": f"Extract patient profile from this image. Schema Requirements:\n{{\"patient\":{{\"id\":\"...\",\"first_name\":\"...\",\"last_name\":\"...\",\"date_of_birth\":\"MM/DD/YYYY\",\"age\":0,\"gender\":\"...\",\"location\":{{\"city\":\"...\",\"state\":\"...\",\"zip\":\"...\"}},\"primary_physician\":\"...\",\"insurance\":\"...\"}},\"allergies\":[{{\"substance\":\"...\",\"severity\":\"...\",\"reaction\":\"...\",\"priority\":\"HIGH/LOW\",\"verified\":true}}],\"current_medications\":[{{\"name\":\"...\",\"dosage\":\"...\",\"frequency\":\"...\",\"purpose\":\"...\",\"days_supply\":30,\"last_fill_date\":\"YYYY-MM-DD\",\"reminder_days_before\":3}}],\"caregiver\":{{\"relationship\":\"...\",\"name\":\"...\",\"phone\":\"...\",\"connection_status\":\"Active\",\"sms_alerts_enabled\":true,\"notification_provider\":\"Twilio\"}},\"emergency_log\":[]}}"
                 },
                 {
                     "type": "image_url",
@@ -148,10 +264,17 @@ async def process_report(file: UploadFile = File(...)):
         cleaned_output = cleaned_output.strip()
             
         profile_data = json.loads(cleaned_output)
-        
+        # Preserve scan_history and refill_reminders if present in existing file
+        try:
+            existing = load_patient_data()
+            if "scan_history" in existing:
+                profile_data["scan_history"] = existing["scan_history"]
+            if "refill_reminders" in existing:
+                profile_data["refill_reminders"] = existing["refill_reminders"]
+        except Exception:
+            pass
         # Save to patient_profile.json
-        with open(PATIENT_FILE, "w") as f:
-            json.dump(profile_data, f, indent=2)
+        save_patient_data(profile_data)
             
         return JSONResponse(content={"status": "success", "profile": profile_data})
         
@@ -472,6 +595,25 @@ async def scan_medication(request: ScanRequest):
             drug_description = ""
             conflict = False
 
+    # Persist to scan history (cap at 100)
+    try:
+        patient_data = load_patient_data()
+        scan_history = patient_data.get("scan_history", [])
+        entry = {
+            "id": str(uuid.uuid4()),
+            "drug_name": scanned_drug,
+            "drug_group": drug_group,
+            "drug_description": drug_description,
+            "scanned_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+            "bookmarked": False,
+            "allergy_conflict": conflict,
+        }
+        scan_history.insert(0, entry)
+        patient_data["scan_history"] = scan_history[:100]
+        save_patient_data(patient_data)
+    except Exception as e:
+        print(f"Scan history save error: {e}")
+
     return JSONResponse(content={
         "scan_result": {
             "drug_name": scanned_drug,
@@ -488,6 +630,127 @@ async def scan_medication(request: ScanRequest):
             ) if conflict else None,
         },
     })
+
+
+@app.get("/api/scan/history")
+async def get_scan_history(bookmarked_only: bool = False):
+    """Return scan history, optionally filtered to bookmarked only. Sorted by scanned_at descending."""
+    patient = load_patient_data()
+    history = patient.get("scan_history", [])
+    if bookmarked_only:
+        history = [h for h in history if h.get("bookmarked")]
+    return JSONResponse(content={"scan_history": history})
+
+
+class BookmarkUpdate(BaseModel):
+    bookmarked: bool
+
+
+@app.patch("/api/scan/history/{entry_id}")
+async def update_scan_bookmark(entry_id: str, body: BookmarkUpdate):
+    """Toggle bookmark for a scan history entry."""
+    patient = load_patient_data()
+    history = patient.get("scan_history", [])
+    for entry in history:
+        if entry.get("id") == entry_id:
+            entry["bookmarked"] = body.bookmarked
+            save_patient_data(patient)
+            return JSONResponse(content={"ok": True, "id": entry_id, "bookmarked": body.bookmarked})
+    return JSONResponse(content={"error": "Entry not found"}, status_code=404)
+
+
+@app.get("/api/refill/status")
+async def refill_status():
+    """Return medications due for refill for the UI banner."""
+    due = get_refill_due_medications()
+    names = [m.get("name") for m in due if m.get("name")]
+    message = f"Refill due for: {', '.join(names)}. Get refills on time — want us to contact your pharmacist?" if names else None
+    return JSONResponse(content={"due_medications": due, "message": message})
+
+
+class RefillPharmacyRequest(BaseModel):
+    medication_names: list[str] | str | None = "all"  # list of names or "all" for all due
+
+
+@app.post("/api/refill/request-pharmacy")
+async def refill_request_pharmacy(body: RefillPharmacyRequest, http_request: Request):
+    """Request pharmacy call for refill of due medications. Reuses caregiver alert flow."""
+    patient = load_patient_data()
+    patient_name = patient.get("patient", {}).get("first_name", "Patient")
+    due = get_refill_due_medications()
+    if body.medication_names == "all" or body.medication_names is None:
+        med_list = due
+    else:
+        # Single str must be wrapped so set() doesn't iterate over characters
+        names_iter = body.medication_names if isinstance(body.medication_names, list) else [body.medication_names]
+        names_set = set(names_iter)
+        med_list = [m for m in due if m.get("name") in names_set]
+    if not med_list:
+        return JSONResponse(content={"error": "No due medications to request", "status": "skipped"}, status_code=400)
+    intent = "Routine refill for " + ", ".join(m["name"] for m in med_list) + " to ensure the patient gets their refills on time."
+    call_request = PharmacyCallRequest(user_request=intent, patient_name=patient_name, intent=intent)
+    return await caregiver_alert(call_request, http_request)
+
+
+@app.get("/api/notifications")
+async def get_notifications():
+    """Unified notifications for the header bell: refill reminders + recent allergy-scan alerts."""
+    patient = load_patient_data()
+    first_name = (patient.get("patient") or {}).get("first_name", "Patient")
+    notifications = []
+    now_iso = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+    # Refill due: one grouped notification
+    due = get_refill_due_medications()
+    if due:
+        names = [m.get("name") for m in due if m.get("name")]
+        if names:
+            names_str = ", ".join(names)
+            notifications.append({
+                "id": "refill-" + now_iso,
+                "type": "refill",
+                "title": "Refill due",
+                "message": f"{first_name}, refill due for {names_str}. Get refills on time — want us to contact your pharmacist?",
+                "action": "contact_pharmacist",
+                "created_at": now_iso,
+            })
+
+    # Refill upcoming: one notification per med (reminder in next 14 days)
+    for m in get_refill_upcoming_medications(14):
+        name = m.get("name")
+        next_refill = m.get("next_refill_date", "")
+        days_until = m.get("days_until_reminder")
+        if not name:
+            continue
+        msg = f"{first_name}, {name} refill in {days_until} days (by {next_refill[:10]})." if days_until is not None and next_refill else f"{first_name}, {name} refill coming up."
+        notifications.append({
+            "id": f"refill-upcoming-{name}-{now_iso}",
+            "type": "refill_upcoming",
+            "title": "Refill coming up",
+            "message": msg,
+            "action": "view_refill",
+            "created_at": now_iso,
+            "next_refill_date": next_refill,
+            "days_until": days_until,
+        })
+
+    # Allergy scan: recent scan_history entries with allergy_conflict (e.g. last 7 days or last 10)
+    history = patient.get("scan_history", [])
+    cutoff = (datetime.now(timezone.utc) - timedelta(days=7)).isoformat().replace("+00:00", "Z")
+    allergy_entries = [h for h in history if h.get("allergy_conflict") and (h.get("scanned_at") or "") >= cutoff][:10]
+    for i, entry in enumerate(allergy_entries):
+        drug = entry.get("drug_name") or "A medication"
+        scanned_at = entry.get("scanned_at") or now_iso
+        notifications.append({
+            "id": entry.get("id") or f"allergy-scan-{i}-{scanned_at}",
+            "type": "allergy_scan",
+            "title": "Allergy alert",
+            "message": f"{drug} you scanned may conflict with your allergies.",
+            "action": "view_scan_history",
+            "created_at": scanned_at,
+        })
+
+    return JSONResponse(content={"notifications": notifications})
 
 
 # ── TWILIO CONVERSATION HANDLER  ─────────────────────────
