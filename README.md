@@ -1,5 +1,6 @@
 
 Introducing Onyx,
+
 An autonomous, medical proxy that cross references patient records to prevent fatal drug interactions via real time Phone Calls.
 
  ![alt text](image.png)
@@ -47,7 +48,6 @@ Voice & Comm: ElevenLabs, Twilio
     CAREGIVER_PHONE_NUMBER=...
     ELEVENLABS_API_KEY=...
     OPENROUTER_API_KEY=...
-    OPENAI_API_KEY=...
     ```
 4.  **Start the Server & Tunnel**
     Run the setup script which boots FastAPI and the SSH tunnel for Twilio:
