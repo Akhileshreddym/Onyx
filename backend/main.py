@@ -129,7 +129,7 @@ async def process_report(file: UploadFile = File(...)):
         
     try:
         response = await client.chat.completions.create(
-            model="google/gemini-3.1-pro-preview",
+            model="google/gemini-2.0-flash-001",
             messages=messages,
             response_format={"type": "json_object"}
         )

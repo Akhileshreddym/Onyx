@@ -1,196 +1,45 @@
 INFO:     Will watch for changes in these directories: ['/Users/akhilesh/Onyx/backend']
 INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
-INFO:     Started reloader process [99213] using WatchFiles
-INFO:     Started server process [99248]
+INFO:     Started reloader process [573] using WatchFiles
+INFO:     Started server process [643]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
-INFO:     127.0.0.1:60799 - "GET / HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60799 - "GET /api/patient HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60797 - "GET / HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:60797 - "GET /api/patient HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60797 - "GET /onboarding HTTP/1.1" 200 OK
-File received: Jack Mullen Health Record.pdf
-Gemini Raw Output: {
-  "patient": {
-    "id": "#88492-AXP",
-    "first_name": "Jack",
-    "last_name": "Mullen",
-    "date_of_birth": "01/15/1950",
-    "age": 76,
-    "gender": "Male",
-    "location": {
-      "city": "Jacksonville",
-      "state": "FL",
-      "zip": "32223"
-    },
-    "primary_physician": "Dr. Marcus Vance, MD",
-    "insurance": "Medicare Part B / Florida Blue Supplemental"
-  },
-  "allergies": [
-    {
-      "substance": "PENICILLIN",
-      "severity": "Severe",
-      "reaction": "Severe Anaphylaxis / Airway Constriction",
-      "priority": "HIGH",
-      "verified": true
-    },
-    {
-      "substance": "SULFA DRUGS",
-      "severity": "Mild",
-      "reaction": "Mild Rash",
-      "priority": "LOW",
-      "verified": true
-    }
-  ],
-  "current_medications": [
-    {
-      "name": "Lisinopril",
-      "dosage": "10mg",
-      "frequency": "Take 1 tablet by mouth daily",
-      "purpose": "Blood Pressure Management"
-    },
-    {
-      "name": "Atorvastatin",
-      "dosage": "20mg",
-      "frequency": "Take 1 tablet by mouth daily at bedtime",
-      "purpose": "Cholesterol"
-    }
-  ],
-  "caregiver": {
-    "relationship": "Daughter",
-    "name": "Sarah Pendelton",
-    "phone": "Not provided",
-    "connection_status": "Active",
-    "sms_alerts_enabled": true,
-    "notification_provider": "Twilio"
-  },
-  "emergency_log": []
-}
-INFO:     127.0.0.1:60795 - "POST /api/process_report HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60795 - "GET / HTTP/1.1" 304 Not Modified
-INFO:     127.0.0.1:60795 - "GET /api/patient HTTP/1.1" 200 OK
-File received: Maria G Health Record.pdf
-Gemini Raw Output: {
-  "patient": {
-    "id": "#91024-MGR",
-    "first_name": "Maria G.",
-    "last_name": "Ramirez",
-    "date_of_birth": "08/22/1961",
-    "age": 64,
-    "gender": "Female",
-    "location": {
-      "city": "Orlando",
-      "state": "FL",
-      "zip": "32801"
-    },
-    "primary_physician": "Dr. Elena Rostova, MD",
-    "insurance": "UnitedHealthcare / AARP Medicare Advantage"
-  },
-  "allergies": [
-    {
-      "substance": "NSAIDs (Ibuprofen / Naproxen)",
-      "severity": "Severe",
-      "reaction": "Gastrointestinal Bleeding / Severe Urticaria",
-      "priority": "HIGH",
-      "verified": true
-    },
-    {
-      "substance": "LATEX",
-      "severity": "Moderate",
-      "reaction": "Contact Dermatitis",
-      "priority": "HIGH",
-      "verified": true
-    }
-  ],
-  "current_medications": [
-    {
-      "name": "Metformin",
-      "dosage": "500mg",
-      "frequency": "twice daily with meals",
-      "purpose": "Blood Sugar Control"
-    },
-    {
-      "name": "Levothyroxine",
-      "dosage": "50mcg",
-      "frequency": "daily 30 minutes before breakfast",
-      "purpose": "Thyroid Hormone Replacement"
-    },
-    {
-      "name": "Naproxen",
-      "dosage": "250mg",
-      "frequency": "twice daily as needed",
-      "purpose": "joint pain"
-    }
-  ],
-  "caregiver": {
-    "relationship": "Son",
-    "name": "Carlos Ramirez",
-    "phone": "",
-    "connection_status": "Active",
-    "sms_alerts_enabled": true,
-    "notification_provider": "Twilio"
-  },
-  "emergency_log": []
-}
-INFO:     127.0.0.1:60843 - "POST /api/process_report HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60843 - "GET /api/patient HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60861 - "POST /api/scan HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60918 - "POST /api/chat HTTP/1.1" 200 OK
-INFO:     127.0.0.1:60918 - "POST /api/tts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61717 - "GET / HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:61717 - "GET /api/patient HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61719 - "POST /api/chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61719 - "POST /api/tts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61719 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:61741 - "POST /api/chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61741 - "POST /api/tts HTTP/1.1" 200 OK
 /Users/akhilesh/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
   warnings.warn(
 
 📞 PHARMACY CALL INITIATED
-  Patient: Maria G.
-  Request: order me my prescription for this month
-  Intent: Request to order prescription for the current month.
+  Patient: Maria
+  Request: can you order Tylenol for me at the pharmacy
+  Intent: Request to order Tylenol at the pharmacy.
   Calling Pharmacy: +19049103559
   From: +18638801249
   ✓ Synthesizing message for pharmacy...
-INFO:     127.0.0.1:60923 - "GET /favicon.ico HTTP/1.1" 404 Not Found
-  ✓ TTS complete. Audio size: 662509 bytes
+  ✓ TTS complete. Audio size: 572648 bytes
   ⬆️ Uploading pharmacy_0.mp3 to CDN...
-  ✓ Uploaded to CDN: https://d.uguu.se/AmHFOSik.mp3
-  ✓ Audio URL ready: https://d.uguu.se/AmHFOSik.mp3
+  ✓ Uploaded to CDN: https://d.uguu.se/jdGDSCPJ.mp3
+  ✓ Audio URL ready: https://d.uguu.se/jdGDSCPJ.mp3
   ✓ Pharmacy call TwiML prepared
   ⏳ 🤙 Initiating call to pharmacy...
-  ✓ ✅ Pharmacy call queued! Status: queued. Call SID: CAa18c8813145ec638789f0bb8b23f0ef0
-INFO:     127.0.0.1:60918 - "POST /api/caregiver/alert HTTP/1.1" 200 OK
+  ✓ ✅ Pharmacy call queued! Status: queued. Call SID: CA53371bbf03c8b9e997a3988d5994c4fd
+INFO:     127.0.0.1:61741 - "POST /api/caregiver/alert HTTP/1.1" 200 OK
 
 🔥🔥🔥 PHARMACY RESPONSE ENDPOINT CALLED 🔥🔥🔥
 Request method: POST
-Request headers: {'content-type': 'application/x-www-form-urlencoded; charset=UTF-8', 'x-twilio-service-flow-event': '%7B%22flow_id%22%3A%22voice_twimlverb_01kk61xgzpfjs9tphkr35zwj39%22%2C%22type%22%3A%22api_event%22%2C%22action%22%3A%22twiml_fetch%22%2C%22sub_action%22%3A%22completed%22%2C%22result%22%3A%22success%22%2C%22metadata%22%3A%7B%22transfer_type%22%3A%22call_transfer_url%22%7D%7D', 'i-twilio-idempotency-token': '2fbecd6b-91a8-49ee-9757-e98275c0dac4', 'x-twilio-answertimeout': 'PT15S', 'x-twilio-signature': 'K1qQ1Kt1PpaPVwj1XGHwlIQtJOA=', 'accept': '*/*', 'content-length': '519', 'x-home-region': 'us1', 'host': '64d7f9f6d5bee9.lhr.life', 'user-agent': 'TwilioProxy/1.1', 'connection': 'close', 'x-forwarded-for': '13.222.190.45', 'x-forwarded-proto': 'https', 'forwarded': 'for=13.222.190.45;proto=https'}
+Request headers: {'content-type': 'application/x-www-form-urlencoded; charset=UTF-8', 'x-twilio-service-flow-event': '%7B%22flow_id%22%3A%22voice_twimlverb_01kk63t8gwev4bjxyw4e9kry30%22%2C%22type%22%3A%22api_event%22%2C%22action%22%3A%22twiml_fetch%22%2C%22sub_action%22%3A%22completed%22%2C%22result%22%3A%22success%22%2C%22metadata%22%3A%7B%22transfer_type%22%3A%22call_transfer_url%22%7D%7D', 'i-twilio-idempotency-token': '094529dc-1d14-4ed1-a003-49af1846593e', 'x-twilio-answertimeout': 'PT15S', 'x-twilio-signature': 'LhJCg6GlfK9/FXDXpEvE+ryDXA4=', 'accept': '*/*', 'content-length': '523', 'x-home-region': 'us1', 'host': 'f3bd22c944cf6b.lhr.life', 'user-agent': 'TwilioProxy/1.1', 'connection': 'close', 'x-forwarded-for': '52.200.47.101', 'x-forwarded-proto': 'https', 'forwarded': 'for=52.200.47.101;proto=https'}
 Step 1: Reading form data...
 Form data keys: ['Called', 'ToState', 'CallerCountry', 'Direction', 'SpeechResult', 'CallerState', 'Language', 'ToZip', 'Confidence', 'CallSid', 'To', 'CallerZip', 'ToCountry', 'CalledZip', 'ApiVersion', 'CalledCity', 'CallStatus', 'From', 'AccountSid', 'CalledCountry', 'CallerCity', 'ToCity', 'FromCountry', 'Caller', 'FromCity', 'CalledState', 'FromZip', 'FromState']
 Step 2: Parsed data
-  Speech: 'no.'
-  Digits: ''
-Step 3: Detection logic - said_no = True
-Step 4: Pharmacist said NO - starting persuasion flow...
-Step 4a: Loading patient data...
-  Patient: Maria G., Voice: pqHfZKP75CvOlQylNhV4
-Step 4b: Crafting persuasion message: 345 chars
-Step 4c: Synthesizing audio with ElevenLabs...
-Step 4d: Audio synthesized: 401702 bytes
-  ⬆️ Uploading persuasion_1.mp3 to CDN...
-  ✓ Uploaded to CDN: https://d.uguu.se/OgcMbTxi.mp3
-Step 4f: Audio URL ready: https://d.uguu.se/OgcMbTxi.mp3
-Step 4g: Building TwiML response...
-Step 4h: TwiML generated: 394 chars
-  TwiML: <?xml version="1.0" encoding="UTF-8"?><Response><Play>https://d.uguu.se/OgcMbTxi.mp3</Play><Gather input="dtmf speech" maxSpeechTime="30" numDigits="1" speechTimeout="auto" timeout="8"><Say voice="wom...
-✅ SUCCESS: Persuasion response ready
-INFO:     13.222.190.45:0 - "POST /api/pharmacy/response HTTP/1.1" 200 OK
-
-🔥🔥🔥 PHARMACY RESPONSE ENDPOINT CALLED 🔥🔥🔥
-Request method: POST
-Request headers: {'content-type': 'application/x-www-form-urlencoded; charset=UTF-8', 'referer': 'https://64d7f9f6d5bee9.lhr.life/api/pharmacy/response', 'x-twilio-service-flow-event': '%7B%22flow_id%22%3A%22voice_twimlverb_01kk61yv35fveb3schza1w9cv8%22%2C%22type%22%3A%22api_event%22%2C%22action%22%3A%22twiml_fetch%22%2C%22sub_action%22%3A%22completed%22%2C%22result%22%3A%22success%22%2C%22metadata%22%3A%7B%22transfer_type%22%3A%22call_transfer_url%22%7D%7D', 'i-twilio-idempotency-token': '5e8103e7-cf25-46f2-ab26-41b3efb98204', 'x-twilio-answertimeout': 'PT15S', 'x-twilio-signature': 'dO2XM5Ekc/EFEGOXEPE85WhAYds=', 'accept': '*/*', 'content-length': '540', 'x-home-region': 'us1', 'host': '64d7f9f6d5bee9.lhr.life', 'user-agent': 'TwilioProxy/1.1', 'connection': 'close', 'x-forwarded-for': '54.175.36.146', 'x-forwarded-proto': 'https', 'forwarded': 'for=54.175.36.146;proto=https'}
-Step 1: Reading form data...
-Form data keys: ['Called', 'ToState', 'CallerCountry', 'Direction', 'SpeechResult', 'CallerState', 'Language', 'ToZip', 'Confidence', 'CallSid', 'To', 'CallerZip', 'ToCountry', 'CalledZip', 'ApiVersion', 'CalledCity', 'CallStatus', 'From', 'AccountSid', 'CalledCountry', 'CallerCity', 'ToCity', 'FromCountry', 'Caller', 'FromCity', 'CalledState', 'FromZip', 'FromState']
-Step 2: Parsed data
-  Speech: 'we have ibuprofen.'
+  Speech: 'yes.'
   Digits: ''
 Step 3: Detection logic - said_no = False
 Step 5: Pharmacist said YES - building confirmation response...
 Step 6: Confirmation TwiML ready: 223 chars
 ✅ SUCCESS: Confirmation response ready
-INFO:     54.175.36.146:0 - "POST /api/pharmacy/response HTTP/1.1" 200 OK
+INFO:     52.200.47.101:0 - "POST /api/pharmacy/response HTTP/1.1" 200 OK

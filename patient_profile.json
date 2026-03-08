@@ -1,7 +1,7 @@
 {
   "patient": {
-    "id": "#91024-MGR",
-    "first_name": "Maria G.",
+    "id": "91024-MGR",
+    "first_name": "Maria",
     "last_name": "Ramirez",
     "date_of_birth": "08/22/1961",
     "age": 64,
@@ -11,7 +11,7 @@
       "state": "FL",
       "zip": "32801"
     },
-    "primary_physician": "Dr. Elena Rostova, MD",
+    "primary_physician": "Elena Rostova, MD",
     "insurance": "UnitedHealthcare / AARP Medicare Advantage"
   },
   "allergies": [
@@ -24,9 +24,9 @@
     },
     {
       "substance": "LATEX",
-      "severity": "Moderate",
+      "severity": "Mild",
       "reaction": "Contact Dermatitis",
-      "priority": "HIGH",
+      "priority": "LOW",
       "verified": true
     }
   ],
@@ -34,26 +34,20 @@
     {
       "name": "Metformin",
       "dosage": "500mg",
-      "frequency": "twice daily with meals",
+      "frequency": "Twice daily with meals",
       "purpose": "Blood Sugar Control"
     },
     {
       "name": "Levothyroxine",
       "dosage": "50mcg",
-      "frequency": "daily 30 minutes before breakfast",
+      "frequency": "Daily 30 minutes before breakfast",
       "purpose": "Thyroid Hormone Replacement"
-    },
-    {
-      "name": "Naproxen",
-      "dosage": "250mg",
-      "frequency": "twice daily as needed",
-      "purpose": "joint pain"
     }
   ],
   "caregiver": {
     "relationship": "Son",
     "name": "Carlos Ramirez",
-    "phone": "",
+    "phone": null,
     "connection_status": "Active",
     "sms_alerts_enabled": true,
     "notification_provider": "Twilio"
