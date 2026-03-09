@@ -1,4 +1,43 @@
+# --- Python Specific ---
 venv/
+env/
 __pycache__/
+*.py[cod]
+*$py.class
+.ipynb_checkpoints/
+
+# --- Environment & Secrets ---
+# Never push your actual secrets!
 .env
+.env.local
+.env.secret
+
+# --- macOS / System ---
 .DS_Store
+Thmubs.db
+
+# --- Onyx Specific (Clutter & Cache) ---
+# Prevents binary audio files from bloating the repo
+audio_cache/
+*.mp3
+*.wav
+
+# Prevents the "High Entropy" security warnings from server logs
+*.log
+nohup.out
+serveo.log
+ngrok.log
+
+# Data/Temp Files
+patient_profile.json
+*.pdf
+!README.md
+
+# --- Editor Specific ---
+.vscode/
+.idea
+
+
+**/*.log
+**/nohup.out
+**/ngrok_url.txt
