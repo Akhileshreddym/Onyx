@@ -31,8 +31,13 @@ FRONTEND_DIR = BASE_DIR / "frontend"
 
 
 def load_patient_data() -> dict:
-    with open(PATIENT_FILE, "r") as f:
-        return json.load(f)
+    if not PATIENT_FILE.exists():
+        return {}
+    try:
+        with open(PATIENT_FILE, "r") as f:
+            return json.load(f)
+    except Exception:
+        return {}
 
 
 def save_patient_data(data: dict) -> None:
